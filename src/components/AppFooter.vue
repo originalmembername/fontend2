@@ -16,12 +16,13 @@
 
         <v-btn
           v-for="icon in icons"
-          :key="icon"
+          :key="icon.key"
+          :href=icon.url
           class="mx-3"
           dark
           icon
         >
-          <v-icon size="24px">{{ icon }}</v-icon>
+          <v-icon size="24px">{{ icon.key }}</v-icon>
         </v-btn>
       </v-card-title>
 
@@ -36,11 +37,10 @@
   export default {
     data: () => ({
       icons: [
-        'fab fa-facebook',
-        'fab fa-twitter',
-        'fab fa-google-plus',
-        'fab fa-linkedin',
-        'fab fa-instagram'
+        {
+          key: 'fab fa-facebook',
+          url: 'https://www.facebook.com/pet.biernerd'
+        }
       ]
     })
   }
