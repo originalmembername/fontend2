@@ -1,29 +1,9 @@
 <template>
-  <v-app>
-    <AppHeader></AppHeader>
-    <v-content>
-      <MainPage></MainPage>
-      <AppFooter></AppFooter>
-    </v-content>    
-  </v-app>
+  <div id="app">
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view/>
+  </div>
 </template>
-
-<script>
-import MainPage from './components/MainPage'
-import AppHeader from './components/AppHeader'
-import AppFooter from './components/AppFooter'
-
-export default {
-  name: 'App',
-  components: {
-    MainPage,
-    AppHeader,
-    AppFooter
-  },
-  data () {
-    return {
-      //
-    }
-  }
-}
-</script>
