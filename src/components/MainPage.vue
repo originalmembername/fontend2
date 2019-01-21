@@ -9,7 +9,7 @@
           <div>
             <div class="headline">Welcome</div>
             <div>{{texts[0].message}}</div>
-            <div>Read more</div>
+            <div><a href="/about">Read more</a></div>
           </div>
         </div>
       </div>
