@@ -82,12 +82,10 @@ export default {
   methods: {
     submit() {
       this.$v.$touch();
-      this.$http
-        .post("https://jsonplaceholder.typicode.com/users", {
-          name: this.name,
-          email: this.email
-        })
-        .then(function(responseData) {
+      this.$http( { 
+        url: 'http://127.0.0.1:8000/api/v1/vocabs/',
+        method: 'GET'
+      }).then(function(responseData) {
           /* eslint-disable no-console */
           console.log(responseData);
           /* eslint-enable no-console */
