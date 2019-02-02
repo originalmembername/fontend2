@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import MainPage from './components/MainPage.vue'
 import About from './components/About.vue'
 import Login from './components/Login.vue'
+import Vocabs from './components/Vocabs.vue'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/vocabs',
+      name: 'vocabs',
+      component: Vocabs
     }
   ]
 })

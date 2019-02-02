@@ -13,7 +13,7 @@
     <v-toolbar-items class="hidden-sm-and-down">
       <v-btn flat href="/about">About</v-btn>
       <v-btn flat href="/login">Login</v-btn>
-      <v-btn flat>Link Three</v-btn>
+      <v-btn flat href="/vocabs">Vocabs</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 </template>
