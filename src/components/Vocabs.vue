@@ -66,26 +66,39 @@ export default {
   },
 
   methods: {
-    submit() {
-      this.$v.$touch();
-      this.$http({
+    loadVocab() {
+        this.$http({
         url: "http://127.0.0.1:8000/api/v1/vocabs/",
         method: "GET"
       }).then(function(responseData) {
         /* eslint-disable no-console */
         console.log(responseData);
-        this.vocabList.push({ german: "Haus", english: "house" });
-        this.vocabList.push({ german: "Tisch", english: "table" });
+        this.vocabList = JSON.parse(responseData.bodyText);
         console.log(this.vocabList);
         /* eslint-enable no-console */
-        //add vocabs to vocabList
       });
+    },
+    submit() {
+      this.$v.$touch();
+      this.$http.post("http://127.0.0.1:8000/api/v1/vocabs/", {
+          "german" : this.german,
+          "english" : this.english
+      }).then(function(responseData) {
+        /* eslint-disable no-console */
+        console.log(responseData);
+        this.vocabList = JSON.parse(responseData.bodyText);
+        console.log(this.vocabList);
+        /* eslint-enable no-console */
+        });
     },
     clear() {
       this.$v.$reset();
       this.german = "";
       this.english = "";
     }
+  },
+  beforeMount: function() {
+      this.loadVocab();
   }
 };
 </script>

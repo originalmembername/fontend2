@@ -8,3 +8,4 @@ class Vocabs(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.german, self.english)
+        
