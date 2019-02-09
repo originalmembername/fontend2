@@ -3,6 +3,9 @@ from rest_framework import generics
 from .models import Vocabs
 from .serializers import VocabsSerializer
 from django.http import HttpResponse
+from django.http import JsonResponse
+from django.core import serializers
+import json
 
 
 class ListVocabsView(generics.ListAPIView):
@@ -14,4 +17,4 @@ class ListVocabsView(generics.ListAPIView):
     
     def post (self, request, version) :    
         Vocabs.objects.create(german=request.data['german'], english=request.data['english'])
-        return HttpResponse("Added new vocab")
+        return HttpResponse("Inserted vocabulary: " + request.data['german'] + ": " + request.data['english'])

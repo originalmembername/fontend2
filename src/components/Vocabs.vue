@@ -86,9 +86,8 @@ export default {
       }).then(function(responseData) {
         /* eslint-disable no-console */
         console.log(responseData);
-        this.vocabList = JSON.parse(responseData.bodyText);
-        console.log(this.vocabList);
         /* eslint-enable no-console */
+        this.loadVocab();
         });
     },
     clear() {
