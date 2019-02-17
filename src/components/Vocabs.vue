@@ -22,11 +22,17 @@
         <v-btn @click.prevent="submit">submit</v-btn>
         <v-btn @click="clear">clear</v-btn>
       </form>
+      <div>
+        <v-alert :value="true" type="success">This is a success alert.</v-alert>
+      </div>
     </v-flex>
     <v-flex xs6>
       <h1>Vocab List</h1>
       <ul id="vocabs">
-        <li v-for="vocab in this.vocabList" :key="vocab.german">{{ vocab.german }} : {{vocab.english}}</li>
+        <li
+          v-for="vocab in this.vocabList"
+          :key="vocab.german"
+        >{{ vocab.german }} : {{vocab.english}}</li>
       </ul>
     </v-flex>
   </v-layout>
@@ -47,7 +53,10 @@ export default {
   data: () => ({
     german: "",
     english: "",
-    vocabList: []
+    vocabList: [],
+    return: {
+      alert: true
+    }
   }),
 
   computed: {
@@ -67,7 +76,7 @@ export default {
 
   methods: {
     loadVocab() {
-        this.$http({
+      this.$http({
         url: "http://127.0.0.1:8000/api/v1/vocabs/",
         method: "GET"
       }).then(function(responseData) {
@@ -80,14 +89,16 @@ export default {
     },
     submit() {
       this.$v.$touch();
-      this.$http.post("http://127.0.0.1:8000/api/v1/vocabs/", {
-          "german" : this.german,
-          "english" : this.english
-      }).then(function(responseData) {
-        /* eslint-disable no-console */
-        console.log(responseData);
-        /* eslint-enable no-console */
-        this.loadVocab();
+      this.$http
+        .post("http://127.0.0.1:8000/api/v1/vocabs/", {
+          german: this.german,
+          english: this.english
+        })
+        .then(function(responseData) {
+          /* eslint-disable no-console */
+          console.log(responseData);
+          /* eslint-enable no-console */
+          this.loadVocab();
         });
     },
     clear() {
@@ -97,7 +108,7 @@ export default {
     }
   },
   beforeMount: function() {
-      this.loadVocab();
+    this.loadVocab();
   }
 };
 </script>

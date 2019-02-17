@@ -15,6 +15,12 @@ class ListVocabsView(generics.ListAPIView):
     queryset = Vocabs.objects.all()
     serializer_class = VocabsSerializer
     
-    def post (self, request, version) :    
-        Vocabs.objects.create(german=request.data['german'], english=request.data['english'])
-        return HttpResponse("Inserted vocabulary: " + request.data['german'] + ": " + request.data['english'])
+    def post (self, request, version) : 
+        if Vocabs.objects.filter(german=request.data['german']).count()==0:
+            Vocabs.objects.create(german=request.data['german'], english=request.data['english'])
+            return JsonResponse({'inserted': 'True'})
+        else:
+            return JsonResponse({'insterted': 'False'})
+
+    """ def delete (self, request, version) :
+         """
