@@ -9,14 +9,12 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
 import AppHeader from './components/AppHeader'
 import AppFooter from './components/AppFooter'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
     AppHeader,
     AppFooter
   },

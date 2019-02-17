@@ -23,7 +23,7 @@
         <v-btn @click="clear">clear</v-btn>
       </form>
       <div>
-        <v-alert :value="true" type="success">This is a success alert.</v-alert>
+        <v-alert :value="alert" type="error">Vocab already exists.</v-alert>
       </div>
     </v-flex>
     <v-flex xs6>
@@ -55,7 +55,7 @@ export default {
     english: "",
     vocabList: [],
     return: {
-      alert: true
+      alert: false
     }
   }),
 
@@ -95,8 +95,14 @@ export default {
           english: this.english
         })
         .then(function(responseData) {
-          /* eslint-disable no-console */
-          console.log(responseData);
+          /* eslint-disable no-console */       
+          var inserted = JSON.parse(responseData.bodyText).inserted;
+          if(inserted == "False") {
+            this.alert = true;
+          }
+          else {
+            this.alert = false;
+          }
           /* eslint-enable no-console */
           this.loadVocab();
         });

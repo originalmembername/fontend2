@@ -20,7 +20,7 @@ class ListVocabsView(generics.ListAPIView):
             Vocabs.objects.create(german=request.data['german'], english=request.data['english'])
             return JsonResponse({'inserted': 'True'})
         else:
-            return JsonResponse({'insterted': 'False'})
+            return JsonResponse({'inserted': 'False'})
 
     """ def delete (self, request, version) :
          """
