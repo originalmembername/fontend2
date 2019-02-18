@@ -88,6 +88,9 @@ export default {
       });
     },
     submit() {
+      if(this.german == "" || this.english == ""){
+        return;
+      }
       this.$v.$touch();
       this.$http
         .post("http://127.0.0.1:8000/api/v1/vocabs/", {
@@ -105,12 +108,14 @@ export default {
           }
           /* eslint-enable no-console */
           this.loadVocab();
+          this.clear();
         });
     },
     clear() {
       this.$v.$reset();
       this.german = "";
       this.english = "";
+      this.alert = false;
     }
   },
   beforeMount: function() {
