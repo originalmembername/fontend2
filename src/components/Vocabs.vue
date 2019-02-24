@@ -22,9 +22,7 @@
         <v-btn @click.prevent="submit">submit</v-btn>
         <v-btn @click="clear">clear</v-btn>
       </form>
-      <div>
         <v-alert :value="alert" type="error">Vocab already exists.</v-alert>
-      </div>
     </v-flex>
     <v-flex xs6>
       <h1>Vocab List</h1>
@@ -54,9 +52,7 @@ export default {
     german: "",
     english: "",
     vocabList: [],
-    return: {
-      alert: false
-    }
+    alert: false
   }),
 
   computed: {
@@ -101,7 +97,9 @@ export default {
           /* eslint-disable no-console */       
           var inserted = JSON.parse(responseData.bodyText).inserted;
           if(inserted == "False") {
+            console.log("Vocab already exists");
             this.alert = true;
+            console.log("Alert: " + this.alert);
           }
           else {
             this.alert = false;
@@ -115,7 +113,6 @@ export default {
       this.$v.$reset();
       this.german = "";
       this.english = "";
-      this.alert = false;
     }
   },
   beforeMount: function() {

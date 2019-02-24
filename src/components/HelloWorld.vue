@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-layout text-xs-center wrap>
+      <v-alert :value="true" type="success">This is a success alert.</v-alert>
       <v-flex xs12>
         <v-img :src="require('../assets/logo.svg')" class="my-3" contain height="200"></v-img>
       </v-flex>
@@ -15,7 +16,6 @@
             target="_blank"
           >Discord Community</a>
         </p>
-        <v-alert :value="true" type="success">This is a success alert.</v-alert>
       </v-flex>
 
       <v-flex mb-5 xs12>
