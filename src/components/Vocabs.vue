@@ -28,12 +28,17 @@
       <h1>Vocab List</h1>
       <div>
         <v-container fluid>
+          <v-checkbox 
+            :label="'Select all'"
+          ></v-checkbox>
           <v-checkbox
-            v-for="vocab in this.vocabList"
+            v-for="(vocab, index) in vocabList"
             :key="vocab.german"
+            :id="vocab.german"
+            v-model="selected[index]"
             height="0"
             style="margin:0px"
-            :label="`${vocab.german} : ${vocab.english}`"
+            :label="`${index} ${vocab.german} : ${vocab.english}`"
           ></v-checkbox>
         </v-container>
       </div>
@@ -53,12 +58,15 @@ export default {
     english: { required }
   },
 
-  data: () => ({
+  data() {
+    return {
+    selected: [],    
     german: "",
     english: "",
     vocabList: [],
     alert: false
-  }),
+    }    
+  },
 
   computed: {
     germanErrors() {
@@ -81,11 +89,11 @@ export default {
         url: "http://127.0.0.1:8000/api/v1/vocabs/",
         method: "GET"
       }).then(function(responseData) {
-        /* eslint-disable no-console */
-        console.log(responseData);
         this.vocabList = JSON.parse(responseData.bodyText);
-        console.log(this.vocabList);
-        /* eslint-enable no-console */
+        //by default, unselect all vocab
+        for (var i=0; i<this.vocabList.length; i++){
+          this.selected[i]=false;
+        }
       });
     },
     submit() {
@@ -99,17 +107,12 @@ export default {
           english: this.english
         })
         .then(function(responseData) {
-          /* eslint-disable no-console */
-
           var inserted = JSON.parse(responseData.bodyText).inserted;
           if (inserted == "False") {
-            console.log("Vocab already exists");
             this.alert = true;
-            console.log("Alert: " + this.alert);
           } else {
             this.alert = false;
           }
-          /* eslint-enable no-console */
           this.loadVocab();
           this.clear();
         });
@@ -118,6 +121,11 @@ export default {
       this.$v.$reset();
       this.german = "";
       this.english = "";
+    },
+    selectAll() {
+      /* eslint-disable no-console */
+      console.log("selectAll");
+      /* eslint-enable no-console */
     }
   },
   beforeMount: function() {
