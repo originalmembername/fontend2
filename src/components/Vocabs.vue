@@ -24,17 +24,19 @@
       </form>
       <v-alert :value="alert" type="error">Vocab already exists.</v-alert>
     </v-flex>
-    <v-flex xs6>
+    <v-flex xs6 style="max-height:400px; overflow:scroll;">
       <h1>Vocab List</h1>
-      <v-container fluid>
-        <v-checkbox
-          v-for="vocab in this.vocabList"
-          :key="vocab.german"
-          height=0
-          style="margin:0px"
-          :label="`${vocab.german} : ${vocab.english}`">
-         </v-checkbox>
-      </v-container>
+      <div>
+        <v-container fluid>
+          <v-checkbox
+            v-for="vocab in this.vocabList"
+            :key="vocab.german"
+            height="0"
+            style="margin:0px"
+            :label="`${vocab.german} : ${vocab.english}`"
+          ></v-checkbox>
+        </v-container>
+      </div>
     </v-flex>
   </v-layout>
 </template>
