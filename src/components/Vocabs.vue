@@ -22,16 +22,19 @@
         <v-btn @click.prevent="submit">submit</v-btn>
         <v-btn @click="clear">clear</v-btn>
       </form>
-        <v-alert :value="alert" type="error">Vocab already exists.</v-alert>
+      <v-alert :value="alert" type="error">Vocab already exists.</v-alert>
     </v-flex>
     <v-flex xs6>
       <h1>Vocab List</h1>
-      <ul id="vocabs">
-        <li
+      <v-container fluid>
+        <v-checkbox
           v-for="vocab in this.vocabList"
           :key="vocab.german"
-        >{{ vocab.german }} : {{vocab.english}}</li>
-      </ul>
+          height=0
+          style="margin:0px"
+          :label="`${vocab.german} : ${vocab.english}`">
+         </v-checkbox>
+      </v-container>
     </v-flex>
   </v-layout>
 </template>
@@ -84,7 +87,7 @@ export default {
       });
     },
     submit() {
-      if(this.german == "" || this.english == ""){
+      if (this.german == "" || this.english == "") {
         return;
       }
       this.$v.$touch();
@@ -94,14 +97,14 @@ export default {
           english: this.english
         })
         .then(function(responseData) {
-          /* eslint-disable no-console */       
+          /* eslint-disable no-console */
+
           var inserted = JSON.parse(responseData.bodyText).inserted;
-          if(inserted == "False") {
+          if (inserted == "False") {
             console.log("Vocab already exists");
             this.alert = true;
             console.log("Alert: " + this.alert);
-          }
-          else {
+          } else {
             this.alert = false;
           }
           /* eslint-enable no-console */
