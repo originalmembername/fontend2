@@ -27,20 +27,32 @@
     <v-flex xs6 style="max-height:400px; overflow:scroll;">
       <h1>Vocab List</h1>
       <div>
-        <v-container fluid>
-          <v-checkbox 
-            :label="'Select all'"
-          ></v-checkbox>
-          <v-checkbox
-            v-for="(vocab, index) in vocabList"
-            :key="vocab.german"
-            :id="vocab.german"
-            v-model="selected[index]"
-            height="0"
-            style="margin:0px"
-            :label="`${index} ${vocab.german} : ${vocab.english}`"
-          ></v-checkbox>
-        </v-container>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>
+                <label class="form-checkbox">
+                  <input type="checkbox" v-model="selectAll" @click="select">
+                  <i class="form-icon"></i>
+                </label>
+              </th>
+              <th>German</th>
+              <th>English</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="vocab in vocabList" :key="vocab.german">
+              <td>
+                <label class="form-checkbox">
+                  <input type="checkbox" :value="vocab.german" v-model="selected">
+                  <i class="form-icon"></i>
+                </label>
+              </td>
+              <td>{{vocab.german}}</td>
+              <td>: {{vocab.english}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </v-flex>
   </v-layout>
@@ -60,12 +72,13 @@ export default {
 
   data() {
     return {
-    selected: [],    
-    german: "",
-    english: "",
-    vocabList: [],
-    alert: false
-    }    
+      selected: [],
+      selectAll: false,
+      german: "",
+      english: "",
+      vocabList: [],
+      alert: false
+    };
   },
 
   computed: {
@@ -91,8 +104,8 @@ export default {
       }).then(function(responseData) {
         this.vocabList = JSON.parse(responseData.bodyText);
         //by default, unselect all vocab
-        for (var i=0; i<this.vocabList.length; i++){
-          this.selected[i]=false;
+        for (var i = 0; i < this.vocabList.length; i++) {
+          this.selected[i] = false;
         }
       });
     },
@@ -122,10 +135,13 @@ export default {
       this.german = "";
       this.english = "";
     },
-    selectAll() {
-      /* eslint-disable no-console */
-      console.log("selectAll");
-      /* eslint-enable no-console */
+    select() {
+      this.selected = [];
+      if (!this.selectAll) {
+        for (let i in this.vocabList) {
+          this.selected.push(this.vocabList[i].german);
+        }
+      }
     }
   },
   beforeMount: function() {
