@@ -22,5 +22,12 @@ class ListVocabsView(generics.ListAPIView):
         else:
             return JsonResponse({'inserted': 'False'})
 
-    """ def delete (self, request, version) :
-         """
+    def delete (self, request, version) :
+        items = request.data['items']
+        if len(items) > 0:
+            for vocab in items:
+                Vocabs.objects.filter(german=vocab).delete()
+            return JsonResponse({ 'deleted' : 'True'})
+        else:
+            return JsonResponse({ 'deleted' : 'False'})
+        

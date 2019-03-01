@@ -27,6 +27,7 @@
     <v-flex xs6 style="max-height:400px; overflow:scroll;">
       <h1>Vocab List</h1>
       <div>
+        <v-btn small @click="deleteSelected()">Delete Selected</v-btn>
         <table class="table table-striped table-hover">
           <thead>
             <tr>
@@ -103,10 +104,6 @@ export default {
         method: "GET"
       }).then(function(responseData) {
         this.vocabList = JSON.parse(responseData.bodyText);
-        //by default, unselect all vocab
-        for (var i = 0; i < this.vocabList.length; i++) {
-          this.selected[i] = false;
-        }
       });
     },
     submit() {
@@ -142,6 +139,19 @@ export default {
           this.selected.push(this.vocabList[i].german);
         }
       }
+    },
+    deleteSelected() {
+      /* eslint-disable no-console */
+      console.log("delete selected vocabs: " + JSON.stringify(this.selected));
+      /* eslint-enable no-console */
+      this.$http
+        .delete("http://127.0.0.1:8000/api/v1/vocabs/", {
+          body: { items: this.selected }
+        })
+        .then(function() {
+          this.loadVocab();
+          this.clear();
+        });
     }
   },
   beforeMount: function() {
