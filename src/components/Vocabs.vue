@@ -1,7 +1,8 @@
 <template>
   <v-layout row wrap>
     <v-flex xs6>
-      <h1>Add new Vocabulary</h1>
+      <h1 v-if="editMode">Edit vocabulary</h1>
+      <h1 v-else>Add new vocabulary</h1>
       <form>
         <v-text-field
           v-model="german"
@@ -19,8 +20,10 @@
           @input="$v.english.$touch()"
           @blur="$v.english.$touch()"
         ></v-text-field>
-        <v-btn @click.prevent="submit">submit</v-btn>
-        <v-btn @click="clear">clear</v-btn>
+        <v-btn v-if="editMode" @click.prevent="submitEdit">submit</v-btn>
+        <v-btn v-else @click.prevent="submitAdd">submit</v-btn>
+        <v-btn v-if="editMode" @click="cancelEdit">cancel</v-btn>
+        <v-btn v-else @click="clear">clear</v-btn>
       </form>
       <v-alert :value="alert" type="error">Vocab already exists.</v-alert>
     </v-flex>
@@ -37,8 +40,9 @@
                   <i class="form-icon"></i>
                 </label>
               </th>
-              <th>German</th>
+              <th style="padding:10px">German</th>
               <th>English</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -49,8 +53,11 @@
                   <i class="form-icon"></i>
                 </label>
               </td>
-              <td>{{vocab.german}}</td>
-              <td>: {{vocab.english}}</td>
+              <td style="padding-left:10px">{{vocab.german}}</td>
+              <td>{{vocab.english}}</td>
+              <td>
+                <v-btn small @click="edit(vocab.german, vocab.english)">Edit</v-btn>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -78,7 +85,8 @@ export default {
       german: "",
       english: "",
       vocabList: [],
-      alert: false
+      alert: false,
+      editMode: false
     };
   },
 
@@ -106,10 +114,13 @@ export default {
         this.vocabList = JSON.parse(responseData.bodyText);
       });
     },
-    submit() {
+    submitAdd() {
       if (this.german == "" || this.english == "") {
         return;
       }
+      /* eslint-disable no-console */
+      console.log("Submit add");
+      /* eslint-enable no-console */
       this.$v.$touch();
       this.$http
         .post("http://127.0.0.1:8000/api/v1/vocabs/", {
@@ -127,10 +138,20 @@ export default {
           this.clear();
         });
     },
+    submitEdit() {
+      /* eslint-disable no-console */
+      console.log("Submit edit");
+      /* eslint-enable no-console */
+      this.editMode = false;
+    },
     clear() {
       this.$v.$reset();
       this.german = "";
       this.english = "";
+    },
+    cancelEdit() {
+      this.clear();
+      this.editMode = false;
     },
     select() {
       this.selected = [];
@@ -153,6 +174,14 @@ export default {
           this.loadVocab();
           this.clear();
         });
+    },
+    edit(german, english) {
+      /* eslint-disable no-console */
+      console.log("Edit vocab: " + german + ", " + english);
+      /* eslint-enable no-console */
+      this.editMode = true;
+      this.german = german;
+      this.english = english;
     }
   },
   beforeMount: function() {
