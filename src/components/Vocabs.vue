@@ -25,7 +25,7 @@
         <v-btn v-if="editMode" @click="cancelEdit">cancel</v-btn>
         <v-btn v-else @click="clear">clear</v-btn>
       </form>
-      <v-alert :value="alert" type="error">Vocab already exists.</v-alert>
+      <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
     </v-flex>
     <v-flex xs6 style="max-height:400px; overflow:scroll;">
       <h1>Vocab List</h1>
@@ -85,8 +85,9 @@ export default {
       german: "",
       english: "",
       vocabList: [],
-      alert: false,
-      editMode: false
+      duplicateAlert: false,
+      editMode: false,
+      editedVocab: ""
     };
   },
 
@@ -128,20 +129,43 @@ export default {
           english: this.english
         })
         .then(function(responseData) {
-          var inserted = JSON.parse(responseData.bodyText).inserted;
-          if (inserted == "False") {
-            this.alert = true;
+          var edited = JSON.parse(responseData.bodyText).edited;
+          if (edited == "False") {
+            this.duplicateAlert = true;
           } else {
-            this.alert = false;
+            this.duplicateAlert = false;
           }
           this.loadVocab();
           this.clear();
         });
     },
     submitEdit() {
+      if (this.german == "" || this.english == "") {
+        return;
+      }
       /* eslint-disable no-console */
       console.log("Submit edit");
       /* eslint-enable no-console */
+      this.$v.$touch();
+      this.$http
+        .put("http://127.0.0.1:8000/api/v1/vocabs/", {
+          germanOld: this.editedVocab,
+          german: this.german,
+          english: this.english
+        })
+        .then(function(responseData) {
+          var edited = JSON.parse(responseData.bodyText).edited;
+          if (edited == "False") {
+            this.duplicateAlert = true;
+          } else {
+            this.duplicateAlert = false;
+          }
+          this.loadVocab();
+          this.clear();
+          this.editedVocab = "";
+          this.editMode = false;
+        });
+
       this.editMode = false;
     },
     clear() {
@@ -169,7 +193,7 @@ export default {
         .delete("http://127.0.0.1:8000/api/v1/vocabs/", {
           body: { items: this.selected }
         })
-        .then(function() {          
+        .then(function() {
           this.selected = [];
           this.loadVocab();
           this.clear();
@@ -182,6 +206,7 @@ export default {
       this.editMode = true;
       this.german = german;
       this.english = english;
+      this.editedVocab = german;
     }
   },
   beforeMount: function() {

@@ -30,4 +30,24 @@ class ListVocabsView(generics.ListAPIView):
             return JsonResponse({ 'deleted' : 'True'})
         else:
             return JsonResponse({ 'deleted' : 'False'})
+
+    def put (self, request, version) :
+        key = request.data['germanOld']
+        german = request.data['german']
+        english = request.data['english']
+        if key == german:
+            # Only update English
+            vocabObj = Vocabs.objects.get(german=key)
+            vocabObj.english = english
+            vocabObj.save()
+            return JsonResponse({ 'edited' : 'True'})
+        elif Vocabs.objects.filter(german=german).count()>0:
+            #Duplicate
+            return JsonResponse({ 'edited' : 'False'})
+        else:
+            #Update german & english 
+            vocabObj = Vocabs.objects.get(german=key)
+            vocabObj.german = german
+            vocabObj.english = english
+            return JsonResponse({ 'edited' : 'True'})
         
