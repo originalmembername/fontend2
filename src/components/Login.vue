@@ -18,7 +18,7 @@
       counter
       @click:append="show = !show"
     ></v-text-field>
-    <v-btn @click.prevent="submit">submit</v-btn>
+    <v-btn @click.prevent="login">login</v-btn>
     <v-btn @click="clear">clear</v-btn>
   </form>
 </template>
@@ -58,22 +58,20 @@ export default {
   },
 
   methods: {
-    submit() {
-      this.$v.$touch();
-      this.$http({
-        url: "http://127.0.0.1:8000/api/v1/vocabs/",
-        method: "GET"
-      }).then(function(responseData) {
-        /* eslint-disable no-console */
-        console.log(responseData);
-        /* eslint-enable no-console */
-      });
-    },
     clear() {
       this.$v.$reset();
       this.password = "";
       this.email = "";
-    }
+    },
+    login: function () {
+      /* eslint-disable no-console */
+        let email = this.email 
+        let password = this.password
+        this.$store.dispatch('login', { email, password })
+       .then(() => this.$router.push('/account'))
+       .catch(err => console.log(err))
+       /* eslint-disable no-console */
+      }
   }
 };
 </script>
