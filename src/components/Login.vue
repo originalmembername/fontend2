@@ -36,8 +36,8 @@ export default {
   },
 
   data: () => ({
-    name: "",
     email: "",
+    password: "",
     show: false
   }),
 
