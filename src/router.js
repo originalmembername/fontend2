@@ -6,10 +6,12 @@ import Login from './components/Login.vue'
 import Vocabs from './components/Vocabs.vue'
 import HelloWorld from './components/HelloWorld.vue'
 import Account from './components/account'
+import Register from './components/Register.vue'
+import store from './store.js'
 
 Vue.use(Router)
 
-export default new Router({
+  let router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -36,12 +38,33 @@ export default new Router({
     {
       path: '/account',
       name: 'account',
-      component: Account
+      component: Account,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/helloworld',
       name: 'helloWorld',
       component: HelloWorld
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next()
+      return
+    }
+    next('/login') 
+  } else {
+    next() 
+  }
+})
+export default router
