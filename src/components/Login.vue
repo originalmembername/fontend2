@@ -65,6 +65,7 @@ export default {
     },
     login: function () {
       /* eslint-disable no-console */
+      console.log('login')
         let email = this.email 
         let password = this.password
         this.$store.dispatch('login', { email, password })

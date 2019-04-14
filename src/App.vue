@@ -34,7 +34,8 @@ export default {
       }
   },
   created: function () {
-    this.$http.interceptors.response.use(undefined, function (err) {
+    if(this.$http.interceptors.response != null) {
+      this.$http.interceptors.response.use(undefined, function (err) {
       // eslint-disable-next-line
       return new Promise(function (resolve, reject) {
         if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
@@ -43,6 +44,7 @@ export default {
         throw err;
       });
     });
+    }    
   },
   data () {
     return {
