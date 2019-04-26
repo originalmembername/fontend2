@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+</head>
+<body>
+    {% if form.errors %}
+    <p>There are errors in your form</p>
+    {% endif %}
+
+    {% if next %}
+    <p>Access restricted</p>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %} 
+
+        <p>Username: {{form.username}}</p>
+        <p>Password: {{form.password}}</p>
+
+        <p><input type="submit" value="login"></p>
+        <input type="hidden" name="next" value={{next}}>
+    </form>
+</body>
+</html>
