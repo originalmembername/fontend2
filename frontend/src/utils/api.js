@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const mocks = {
   'auth': { 'POST': { user: 'user1', token: 'This-is-a-mocked-token' } },
   'user/me': { 'GET': { name: 'doggo', title: 'sir' } }
