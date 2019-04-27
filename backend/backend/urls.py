@@ -18,7 +18,8 @@ from django.urls import path, re_path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path('api/(?P<version>(v1|v2))/', include('vocab.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('accounts.urls')) 
+    re_path('api/(?P<version>(v1|v2))/', include('vocab.urls')),    #vocab
+    path('accounts/', include('django.contrib.auth.urls')),         #login
+    path('', include('accounts.urls')),                             #register
+    path('', include('authapi.urls'))                               #login from different source
 ]

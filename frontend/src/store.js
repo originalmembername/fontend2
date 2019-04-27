@@ -30,7 +30,7 @@ export default new Vuex.Store({
 
   },
   actions: {
-    login({ commit }, user) {
+    /* login({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit('auth_request')
         apiCall({url: 'auth', data: user, method: 'POST'})
@@ -41,6 +41,30 @@ export default new Vuex.Store({
             axios.defaults.headers.common['Authorization'] = token
             commit('auth_success', token, user)
             resolve(resp)
+          })
+          .catch(err => {
+            commit('auth_error')
+            localStorage.removeItem('token')
+            reject(err)
+          })
+      })
+    }, */
+    login({ commit }, user) {
+      return new Promise((resolve, reject) => {
+        commit('auth_request')
+        axios
+        .get("http://localhost:8000/auth/", {
+          user: "Heini",
+          password: "heinipwd1"
+        })
+        .then(function(responseData) {
+          console.log(responseData)
+            /* const token = resp.token
+            const user = resp.user
+            localStorage.setItem('token', token)
+            axios.defaults.headers.common['Authorization'] = token
+            commit('auth_success', token, user)
+            resolve(resp) */
           })
           .catch(err => {
             commit('auth_error')
