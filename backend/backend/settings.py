@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
 	'corsheaders',
     'vocab',
     'accounts'
@@ -105,7 +106,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ( 'authapi.authbackend.AuthBackend', )
+# AUTHENTICATION_BACKENDS = ( 'authapi.authbackend.AuthBackend', )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication', 
+    ],
+}
 
 
 # Internationalization
