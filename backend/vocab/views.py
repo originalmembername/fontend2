@@ -49,5 +49,6 @@ class ListVocabsView(generics.ListAPIView):
             vocabObj = Vocabs.objects.get(german=key)
             vocabObj.german = german
             vocabObj.english = english
+            vocabObj.save()
             return JsonResponse({ 'edited' : 'True'})
         

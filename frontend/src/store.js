@@ -57,7 +57,7 @@ export default new Vuex.Store({
         commit('auth_request')
         axios.defaults.headers.common['Authorization'] = 'Token c2a267ec7fbd19562bfb03754851ac4abedb87b6'
         axios
-          .get("http://localhost:8000/auth/", {
+          .get("http://localhost:8000/token_auth/", {
             user: "Heini",
             password: "heinipwd1"
           })
