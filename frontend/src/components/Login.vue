@@ -1,12 +1,20 @@
 <template>
   <form>
-    <v-text-field
+    <!-- <v-text-field
       v-model="email"
       :error-messages="emailErrors"
       label="E-mail"
       required
       @input="$v.email.$touch()"
       @blur="$v.email.$touch()"
+    ></v-text-field>-->
+    <v-text-field
+      v-model="username"
+      :error-messages="usernameErrors"
+      label="User"
+      required
+      @input="$v.username.$touch()"
+      @blur="$v.username.$touch()"
     ></v-text-field>
     <v-text-field
       v-model="password"
@@ -16,6 +24,8 @@
       :type="show ? 'text' : 'password'"
       label="Password"
       counter
+      @input="$v.password.$touch()"
+      @blur="$v.password.$touch()"
       @click:append="show = !show"
     ></v-text-field>
     <v-btn @click.prevent="login">login</v-btn>
@@ -31,22 +41,30 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-    email: { required, email },
+    /* email: { required, email }, */
+    username: { required },
     password: { required }
   },
 
   data: () => ({
-    email: "",
+    /* email: "", */
+    username: "",
     password: "",
     show: false
   }),
 
   computed: {
-    emailErrors() {
+    /* emailErrors() {
       const errors = [];
       if (!this.$v.email.$dirty) return errors;
       !this.$v.email.email && errors.push("Must be valid e-mail");
       !this.$v.email.required && errors.push("E-mail is required");
+      return errors;
+    }, */
+    usernameErrors() {
+      const errors = [];
+      if (!this.$v.username.$dirty) return errors;
+      !this.$v.username.required && errors.push("Username is required");
       return errors;
     },
     passwordErrors() {
@@ -58,19 +76,6 @@ export default {
   },
 
   methods: {
-    /* emailErrors() {
-      const errors = [];
-      if (!this.$v.email.$dirty) return errors;
-      !this.$v.email.email && errors.push("Must be valid e-mail");
-      !this.$v.email.required && errors.push("E-mail is required");
-      return errors;
-    },
-    passwordErrors() {
-      const errors = [];
-      if (!this.$v.password.$dirty) return errors;
-      !this.$v.password.required && errors.push("Password is required");
-      return errors;
-    }, */
     clear() {
       this.$v.$reset();
       this.password = "";
