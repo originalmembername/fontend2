@@ -55,20 +55,22 @@ export default new Vuex.Store({
     login({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit('auth_request')
+        let username = user.username
+        let password = user.password
         axios.defaults.headers.common['Authorization'] = 'Token c2a267ec7fbd19562bfb03754851ac4abedb87b6'
         axios
-          .get("http://localhost:8000/token_auth/", {
-            user: "Heini",
-            password: "heinipwd1"
+          .post("http://localhost:8000/login/", {
+            username: username,
+            password: password
           })
-          .then(function (responseData) {
-            console.log(responseData)
-            /* const token = resp.token
-            const user = resp.user
+          .then(function (resp) {
+            console.log(resp)
+            const token = resp.token
+            const user = username
             localStorage.setItem('token', token)
             axios.defaults.headers.common['Authorization'] = token
             commit('auth_success', token, user)
-            resolve(resp) */
+            resolve(resp)
           })
           .catch(err => {
             commit('auth_error')

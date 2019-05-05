@@ -34,6 +34,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
 
@@ -82,15 +83,15 @@ export default {
       this.email = "";
     },
     login: function() {
-      if (this.passwordErrors[0] != null || this.emailErrors[0] != null) {
+      if (this.passwordErrors[0] != null || this.usernameErrors[0] != null) {
         return;
       }
       /* eslint-disable no-console */
       console.log("login");
-      let email = this.email;
+      let username = this.username;
       let password = this.password;
       this.$store
-        .dispatch("login", { email, password })
+        .dispatch("login", { username, password })
         .then(() => this.$router.push("/account"))
         .catch(err => console.log(err));
       /* eslint-disable no-console */
