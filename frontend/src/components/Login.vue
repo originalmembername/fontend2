@@ -86,15 +86,16 @@ export default {
       if (this.passwordErrors[0] != null || this.usernameErrors[0] != null) {
         return;
       }
-      /* eslint-disable no-console */
       console.log("login");
       let username = this.username;
       let password = this.password;
       this.$store
         .dispatch("login", { username, password })
-        .then(() => this.$router.push("/account"))
+        .then(resp => {
+          debugger
+          this.$router.push("/account");
+        })
         .catch(err => console.log(err));
-      /* eslint-disable no-console */
     }
   }
 };
