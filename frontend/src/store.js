@@ -69,10 +69,12 @@ export default new Vuex.Store({
             localStorage.setItem('token', token)
             axios.defaults.headers.common['Authorization'] = token
             commit('auth_success', token, user)
+            debugger
             resolve(resp)
           })
           .catch(err => {
             commit('auth_error')
+            debugger
             localStorage.removeItem('token')
             reject(err)
           })

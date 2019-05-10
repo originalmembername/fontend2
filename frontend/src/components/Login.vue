@@ -92,8 +92,8 @@ export default {
       this.$store
         .dispatch("login", { username, password })
         .then(resp => {
-          debugger
           this.$router.push("/account");
+          debugger
         })
         .catch(err => console.log(err));
     }
