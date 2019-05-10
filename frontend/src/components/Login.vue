@@ -19,17 +19,18 @@
     <v-text-field
       v-model="password"
       :error-messages="passwordErrors"
-      :append-icon="show ? 'visibility' : 'visibility_off'"
+      :append-icon="pwdShow ? 'visibility' : 'visibility_off'"
       required
-      :type="show ? 'text' : 'password'"
+      :type="pwdShow ? 'text' : 'password'"
       label="Password"
       counter
       @input="$v.password.$touch()"
       @blur="$v.password.$touch()"
-      @click:append="show = !show"
+      @click:append="pwdShow = !pwdShow"
     ></v-text-field>
     <v-btn @click.prevent="login">login</v-btn>
     <v-btn @click="clear">clear</v-btn>
+    <v-alert :value="this.wrongCred" color="error" icon="warning" outline>Wrong username or password.</v-alert>
   </form>
 </template>
 
@@ -51,7 +52,8 @@ export default {
     /* email: "", */
     username: "",
     password: "",
-    show: false
+    pwdShow: false,
+    wrongCred: false
   }),
 
   computed: {
@@ -80,7 +82,9 @@ export default {
     clear() {
       this.$v.$reset();
       this.password = "";
-      this.email = "";
+      // this.email = "";
+      this.username = "";
+      this.wrongCred = false
     },
     login: function() {
       if (this.passwordErrors[0] != null || this.usernameErrors[0] != null) {
@@ -93,9 +97,13 @@ export default {
         .dispatch("login", { username, password })
         .then(resp => {
           this.$router.push("/account");
-          debugger
+          debugger;
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err);
+          this.wrongCred = true;
+          debugger;
+        });
     }
   }
 };
