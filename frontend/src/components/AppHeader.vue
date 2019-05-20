@@ -1,6 +1,6 @@
 <template>
   <v-toolbar>
-    <v-menu offset-y content-class="dropdown-menu" transition="slide-y-transition">
+    <v-menu class="hidden-md-and-up" offset-y content-class="dropdown-menu" transition="slide-y-transition">
       <v-toolbar-side-icon slot="activator"></v-toolbar-side-icon>
       <v-card>
         <v-list>
@@ -33,5 +33,5 @@ export default {
       { title: "Vocabs", href: "/vocabs" }
     ]
   })
-};
+}
 </script>
