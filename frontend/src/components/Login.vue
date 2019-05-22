@@ -97,12 +97,10 @@ export default {
         .dispatch("login", { username, password })
         .then(resp => {
           this.$router.push("/account");
-          debugger;
         })
         .catch(err => {
           console.log(err);
           this.wrongCred = true;
-          debugger;
         });
     }
   }

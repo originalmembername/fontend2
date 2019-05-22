@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 class AuthView(APIView):
     permission_classes = (IsAuthenticated,)
-    
+
     def post (self, request) : 
         username = request.data['user']
         password = request.data['password']
@@ -20,5 +20,5 @@ class AuthView(APIView):
             return JsonResponse({user: 'null'})
 
     def get(self, request):
-        content = {'message': 'Hello, World!'}
+        content = {'message': 'This is a secret message for the user'}
         return JsonResponse(content)
