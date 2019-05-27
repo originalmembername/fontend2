@@ -27,8 +27,7 @@ export default {
     axios.defaults.headers.common["Authorization"] =
       "Token " + axios.defaults.headers.common["Authorization"];
     axios.get("http://localhost:8000/token_auth/", {}).then(function(resp) {
-      console.log(resp.data.message);
-      setMessage(resp.data.message);
+      setMessage(resp.data)
     });
   }
 };

@@ -9,6 +9,10 @@ class Profile(models.Model):
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
 
+    def __str__(self):
+        return "{}  {} from {}".format(self.user.first_name, self.user.last_name, self.location)
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:

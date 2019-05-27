@@ -26,9 +26,12 @@ class AuthView(APIView):
         user = request.user
         first_name = user.first_name
         last_name = user.last_name
-        user.profile.bio = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit...'
-        content = {'message': 'Welcome user: ' + first_name + " " + last_name + "\n" +
-            user.profile.bio}
+        content = {
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'location': user.profile.location
+        }
         return JsonResponse(content)
 
     def update_profile(request, user_id):
