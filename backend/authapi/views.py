@@ -6,6 +6,7 @@ from .authbackend import AuthBackend
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -22,8 +23,16 @@ class AuthView(APIView):
             return JsonResponse({user: 'null'})
 
     def get(self, request):
-        first_name = request.user.first_name
-        last_name = request.user.last_name
-        content = {'message': 'Welcome user: ' + first_name + " " + last_name}
+        user = request.user
+        first_name = user.first_name
+        last_name = user.last_name
+        user.profile.bio = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit...'
+        content = {'message': 'Welcome user: ' + first_name + " " + last_name + "\n" +
+            user.profile.bio}
         return JsonResponse(content)
+
+    def update_profile(request, user_id):
+        user = User.objects.get(pk=user_id)
+        user.profile.bio = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit...'
+        user.save()
 

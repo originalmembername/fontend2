@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 	'corsheaders',
     'vocab',
-    'accounts'
+    'accounts',
+    'authapi',
 ]
 
 MIDDLEWARE = [
