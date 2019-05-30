@@ -30,7 +30,11 @@ class AuthView(APIView):
             'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'location': user.profile.location
+            'location': user.profile.location,
+            'past_lessons': user.profile.past_lessons,
+            'upcoming_lessons': user.profile.upcoming_lessons,
+            'protocol_url': user.profile.protocol_url,
+            'folder_url': user.profile.folder_url
         }
         return JsonResponse(content)
 

@@ -5,9 +5,12 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    past_lessons = models.IntegerField(blank=True, default=0)
+    upcoming_lessons = models.IntegerField(blank=True, default=0)
+    protocol_url = models.CharField(max_length=300, blank=True)
+    folder_url = models.CharField(max_length=300, blank=True)
 
     def __str__(self):
         return "{}  {} from {}".format(self.user.first_name, self.user.last_name, self.location)
