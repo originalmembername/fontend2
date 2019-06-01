@@ -1,14 +1,21 @@
 <template>
   <v-toolbar>
-    <v-menu class="hidden-md-and-up" offset-y content-class="dropdown-menu" transition="slide-y-transition">
+    <v-menu
+      class="hidden-md-and-up"
+      offset-y
+      content-class="dropdown-menu"
+      transition="slide-y-transition"
+    >
       <v-toolbar-side-icon slot="activator"></v-toolbar-side-icon>
       <v-card>
         <v-list>
-          <v-list-tile v-for="(item, index) in menuItems" :key="index">
-            <v-list-tile-title>
-              <router-link :to="item.href" tag="button">{{item.title}}</router-link>
-            </v-list-tile-title>
-          </v-list-tile>
+          <div v-for="(item, index) in menuItems" :key="index">
+            <v-list-tile v-if="showItem(item)">
+              <v-list-tile-title>
+                <router-link :to="item.href" tag="button">{{item.title}}</router-link>
+              </v-list-tile-title>
+            </v-list-tile>
+          </div>
         </v-list>
       </v-card>
     </v-menu>
@@ -20,6 +27,7 @@
       <v-btn flat href="/about">About</v-btn>
       <v-btn v-if="!this.$store.getters.isLoggedIn" flat href="/login">Login</v-btn>
       <v-btn flat href="/vocabs">Vocabs</v-btn>
+      <v-btn v-if="this.$store.getters.isLoggedIn" flat href="/vocabs/personal">Vocabs(personal)</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 </template>
@@ -28,10 +36,24 @@
 export default {
   data: () => ({
     menuItems: [
-      { title: "About", href: "/about" },
-      { title: "Login", href: "/login" },
-      { title: "Vocabs", href: "/vocabs" }
+      { title: "About", href: "/about", loggedIn: true, loggedOut: true },
+      { title: "Login", href: "/login", loggedIn: false, loggedOut: true },
+      { title: "Vocabs", href: "/vocabs", loggedIn: true, loggedOut: true },
+      {
+        title: "Vocabs (Personal)",
+        href: "/vocabs/personal",
+        loggedIn: true,
+        loggedOut: false
+      }
     ]
-  })
-}
+  }),
+  methods: {
+    showItem(item) {
+      return (
+        (this.$store.getters.isLoggedIn && item.loggedIn) ||
+        (!this.$store.getters.isLoggedIn && item.loggedOut)
+      );
+    }
+  }
+};
 </script>
