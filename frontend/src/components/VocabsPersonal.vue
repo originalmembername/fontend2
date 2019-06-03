@@ -67,8 +67,10 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
+import axios from "axios";
 
 export default {
   mixins: [validationMixin],
@@ -107,24 +109,27 @@ export default {
   },
 
   methods: {
+    setVocabList(data) {
+      this.vocabList = data;
+      debugger
+    },
+
     loadVocab() {
-      this.$http({
-        url: "http://127.0.0.1:8000/api/v1/vocabs/",
-        method: "GET"
-      }).then(function(responseData) {
-        this.vocabList = JSON.parse(responseData.bodyText);
-      });
+      let setVocabList = this.setVocabList;
+      axios
+        .get("http://127.0.0.1:8000/api/v1/vocabs/personal/")
+        .then(function(response) {
+          setVocabList(response.data);
+        });
     },
     submitAdd() {
       if (this.german == "" || this.english == "") {
         return;
       }
-      /* eslint-disable no-console */
       console.log("Submit add");
-      /* eslint-enable no-console */
       this.$v.$touch();
-      this.$http
-        .post("http://127.0.0.1:8000/api/v1/vocabs/", {
+      axios
+        .post("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
           german: this.german,
           english: this.english
         })
@@ -143,12 +148,10 @@ export default {
       if (this.german == "" || this.english == "") {
         return;
       }
-      /* eslint-disable no-console */
       console.log("Submit edit");
-      /* eslint-enable no-console */
       this.$v.$touch();
-      this.$http
-        .put("http://127.0.0.1:8000/api/v1/vocabs/", {
+      axios
+        .put("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
           germanOld: this.editedVocab,
           german: this.german,
           english: this.english
@@ -186,11 +189,9 @@ export default {
       }
     },
     deleteSelected() {
-      /* eslint-disable no-console */
       console.log("delete selected vocabs: " + JSON.stringify(this.selected));
-      /* eslint-enable no-console */
-      this.$http
-        .delete("http://127.0.0.1:8000/api/v1/vocabs/", {
+      axios
+        .delete("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
           body: { items: this.selected }
         })
         .then(function() {
@@ -200,9 +201,7 @@ export default {
         });
     },
     edit(german, english) {
-      /* eslint-disable no-console */
       console.log("Edit vocab: " + german + ", " + english);
-      /* eslint-enable no-console */
       this.editMode = true;
       this.german = german;
       this.english = english;
@@ -210,6 +209,10 @@ export default {
     }
   },
   beforeMount: function() {
+    console.log(
+      "Loading vocab with token: " +
+        axios.defaults.headers.common["Authorization"]
+    );
     this.loadVocab();
   }
 };

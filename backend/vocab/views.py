@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.core import serializers
 import json
+from rest_framework.permissions import IsAuthenticated
 
 
 class ListVocabsView(generics.ListAPIView):
@@ -53,15 +54,20 @@ class ListVocabsView(generics.ListAPIView):
             return JsonResponse({ 'edited' : 'True'})
 
 class ListPersonalVocabsView(generics.ListAPIView):
-    """
-    Provides a get method handler.
-    """
-    queryset = Vocabs.objects.all()
-    serializer_class = VocabsSerializer
+    permission_classes = (IsAuthenticated,)
     
-    def post (self, request, version) : 
-        if Vocabs.objects.filter(german=request.data['german']).count()==0:
-            Vocabs.objects.create(german=request.data['german'], english=request.data['english'])
+    serializer_class = VocabsSerializer
+    def get_queryset(self):
+        user = self.request.user
+        return user.profile.vocab_list
+    
+    def post (self, request, version) :
+        profile = self.request.user.profile
+        #Check if vocab exists in user's vocab list
+        if profile.vocab_list.objects.filter(german=request.data['german']).count()==0:            
+            vocab = Vocabs.objects.create(german=request.data['german'], english=request.data['english'])
+            vocab.save()
+            profile.vocab_list.add(vocab)
             return JsonResponse({'inserted': 'True'})
         else:
             return JsonResponse({'inserted': 'False'})
@@ -76,21 +82,22 @@ class ListPersonalVocabsView(generics.ListAPIView):
             return JsonResponse({ 'deleted' : 'False'})
 
     def put (self, request, version) :
+        profile = self.request.user.profile
         key = request.data['germanOld']
         german = request.data['german']
         english = request.data['english']
         if key == german:
             # Only update English
-            vocabObj = Vocabs.objects.get(german=key)
+            vocabObj = profile.vocab_list.objects.get(german=key)
             vocabObj.english = english
             vocabObj.save()
             return JsonResponse({ 'edited' : 'True'})
-        elif Vocabs.objects.filter(german=german).count()>0:
+        elif profile.vocab_list.objects.filter(german=german).count()>0:
             #Duplicate
             return JsonResponse({ 'edited' : 'False'})
         else:
             #Update german & english 
-            vocabObj = Vocabs.objects.get(german=key)
+            vocabObj = profile.vocab_list.objects.get(german=key)
             vocabObj.german = german
             vocabObj.english = english
             vocabObj.save()
