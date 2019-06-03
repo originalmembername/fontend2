@@ -113,13 +113,12 @@ export default {
       this.vocabList = data;
       debugger
     },
-
     loadVocab() {
       let setVocabList = this.setVocabList;
       axios
         .get("http://127.0.0.1:8000/api/v1/vocabs/personal/")
         .then(function(response) {
-          setVocabList(response.data);
+          setVocabList(response.data); 
         });
     },
     submitAdd() {
@@ -149,6 +148,10 @@ export default {
         return;
       }
       console.log("Submit edit");
+      let setDuplicateAlert = this.setDuplicateAlert
+      let setEditedVocab = this.setEditedVocab
+      let setEditMode = this.setEditMode
+      let loadVocab = this.loadVocab
       this.$v.$touch();
       axios
         .put("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
@@ -156,20 +159,20 @@ export default {
           german: this.german,
           english: this.english
         })
-        .then(function(responseData) {
-          var edited = JSON.parse(responseData.bodyText).edited;
+        .then(function(response) {
+          var edited = response.data.edited;
           if (edited == "False") {
-            this.duplicateAlert = true;
+            setDuplicateAlert(true);
           } else {
-            this.duplicateAlert = false;
+            setDuplicateAlert(false);
           }
-          this.loadVocab();
-          this.clear();
-          this.editedVocab = "";
-          this.editMode = false;
+          loadVocab();
+          clear();
+          setEditedVocab("");
+          setEditMode(false);
         });
 
-      this.editMode = false;
+      setEditMode(false);
     },
     clear() {
       this.$v.$reset();
@@ -208,7 +211,13 @@ export default {
       this.editedVocab = german;
     }
   },
-  beforeMount: function() {
+  mounted: function() {
+    //Add "Token " if it's not already there
+    let token_header = axios.defaults.headers.common["Authorization"]
+    if (!/^Token\s\w+/.test(token_header)) {
+      axios.defaults.headers.common["Authorization"] = "Token " + token_header
+      debugger
+    }
     console.log(
       "Loading vocab with token: " +
         axios.defaults.headers.common["Authorization"]

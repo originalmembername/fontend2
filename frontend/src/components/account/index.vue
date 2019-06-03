@@ -31,7 +31,7 @@ export default {
     }
   },
 
-  beforeMount() {
+  mounted() {
     let setMessage = this.setMessage;
     //Request user data from server
     axios.defaults.headers.common["Authorization"] =

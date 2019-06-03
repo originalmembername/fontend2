@@ -81,6 +81,7 @@ class ListPersonalVocabsView(generics.ListAPIView):
         else:
             return JsonResponse({ 'deleted' : 'False'})
 
+    #Edit-function
     def put (self, request, version) :
         profile = self.request.user.profile
         key = request.data['germanOld']
@@ -88,16 +89,16 @@ class ListPersonalVocabsView(generics.ListAPIView):
         english = request.data['english']
         if key == german:
             # Only update English
-            vocabObj = profile.vocab_list.objects.get(german=key)
+            vocabObj = profile.vocab_list.get(german=key)
             vocabObj.english = english
             vocabObj.save()
             return JsonResponse({ 'edited' : 'True'})
-        elif profile.vocab_list.objects.filter(german=german).count()>0:
+        elif profile.vocab_list.filter(german=german).count()>0:
             #Duplicate
             return JsonResponse({ 'edited' : 'False'})
         else:
             #Update german & english 
-            vocabObj = profile.vocab_list.objects.get(german=key)
+            vocabObj = profile.vocab_list.get(german=key)
             vocabObj.german = german
             vocabObj.english = english
             vocabObj.save()
