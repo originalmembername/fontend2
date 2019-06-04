@@ -61,10 +61,11 @@ class ListPersonalVocabsView(generics.ListAPIView):
         user = self.request.user
         return user.profile.vocab_list
     
+    #Add-function
     def post (self, request, version) :
         profile = self.request.user.profile
         #Check if vocab exists in user's vocab list
-        if profile.vocab_list.objects.filter(german=request.data['german']).count()==0:            
+        if profile.vocab_list.filter(german=request.data['german']).count()==0:            
             vocab = Vocabs.objects.create(german=request.data['german'], english=request.data['english'])
             vocab.save()
             profile.vocab_list.add(vocab)
@@ -73,13 +74,13 @@ class ListPersonalVocabsView(generics.ListAPIView):
             return JsonResponse({'inserted': 'False'})
 
     def delete (self, request, version) :
+        profile = self.request.user.profile
         items = request.data['items']
         if len(items) > 0:
             for vocab in items:
-                Vocabs.objects.filter(german=vocab).delete()
-            return JsonResponse({ 'deleted' : 'True'})
-        else:
-            return JsonResponse({ 'deleted' : 'False'})
+                profile.vocab_list.filter(german=vocab).delete()
+        vocabs = profile.vocab_list
+        return JsonResponse({'vocabs' : VocabsSerializer(vocabs, many=True).data})
 
     #Edit-function
     def put (self, request, version) :

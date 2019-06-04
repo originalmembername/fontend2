@@ -109,9 +109,20 @@ export default {
   },
 
   methods: {
+    setEditedVocab(vocab) {
+      this.editedVocab = vocab
+    },
+    setDuplicateAlert(value) {
+      this.duplicateAlert = value
+    },
     setVocabList(data) {
       this.vocabList = data;
-      debugger
+    },
+    setEditMode(value) {
+      this.editMode = value
+    },
+    setSelected(selected) {
+      this.selected = selected
     },
     loadVocab() {
       let setVocabList = this.setVocabList;
@@ -122,6 +133,9 @@ export default {
         });
     },
     submitAdd() {
+      let setDuplicateAlert = this.setDuplicateAlert
+      let loadVocab = this.loadVocab
+      let clear = this.clear
       if (this.german == "" || this.english == "") {
         return;
       }
@@ -132,15 +146,15 @@ export default {
           german: this.german,
           english: this.english
         })
-        .then(function(responseData) {
-          var edited = JSON.parse(responseData.bodyText).edited;
+        .then(function(response) {
+          var edited = response.data.edited;
           if (edited == "False") {
-            this.duplicateAlert = true;
+            setDuplicateAlert(true);
           } else {
-            this.duplicateAlert = false;
+            setDuplicateAlert(false);
           }
-          this.loadVocab();
-          this.clear();
+          loadVocab();
+          clear();
         });
     },
     submitEdit() {
@@ -152,6 +166,7 @@ export default {
       let setEditedVocab = this.setEditedVocab
       let setEditMode = this.setEditMode
       let loadVocab = this.loadVocab
+      let clear = this.clear
       this.$v.$touch();
       axios
         .put("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
@@ -192,16 +207,19 @@ export default {
       }
     },
     deleteSelected() {
+      let clear = this.clear;
+      let setSelected = this.setSelected;
+      let setVocabList = this.setVocabList;
       console.log("delete selected vocabs: " + JSON.stringify(this.selected));
       axios
         .delete("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
-          body: { items: this.selected }
+          data: {items: this.selected}
         })
-        .then(function() {
-          this.selected = [];
-          this.loadVocab();
-          this.clear();
-        });
+        .then(function(response) {
+          setVocabList(response.data.vocabs)
+          setSelected([]);
+          clear();
+        });        
     },
     edit(german, english) {
       console.log("Edit vocab: " + german + ", " + english);
@@ -216,7 +234,6 @@ export default {
     let token_header = axios.defaults.headers.common["Authorization"]
     if (!/^Token\s\w+/.test(token_header)) {
       axios.defaults.headers.common["Authorization"] = "Token " + token_header
-      debugger
     }
     console.log(
       "Loading vocab with token: " +
