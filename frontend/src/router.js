@@ -4,7 +4,6 @@ import MainPage from './components/MainPage.vue'
 import About from './components/About.vue'
 import Login from './components/Login.vue'
 import Vocabs from './components/Vocabs.vue'
-import VocabsPersonal from './components/VocabsPersonal.vue'
 import HelloWorld from './components/HelloWorld.vue'
 import Account from './components/account'
 import Register from './components/Register.vue'
@@ -35,11 +34,6 @@ Vue.use(Router)
       path: '/vocabs',
       name: 'vocabs',
       component: Vocabs
-    },
-    {
-      path: '/vocabs/personal',
-      name: 'vocabs_personal',
-      component: VocabsPersonal
     },
     {
       path: '/account',

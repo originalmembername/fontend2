@@ -67,10 +67,8 @@
 </template>
 
 <script>
-/* eslint-disable */
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
-import axios from "axios";
 
 export default {
   mixins: [validationMixin],
@@ -109,85 +107,66 @@ export default {
   },
 
   methods: {
-    setEditedVocab(vocab) {
-      this.editedVocab = vocab
-    },
-    setDuplicateAlert(value) {
-      this.duplicateAlert = value
-    },
-    setVocabList(data) {
-      this.vocabList = data;
-    },
-    setEditMode(value) {
-      this.editMode = value
-    },
-    setSelected(selected) {
-      this.selected = selected
-    },
     loadVocab() {
-      let setVocabList = this.setVocabList;
-      axios
-        .get("http://127.0.0.1:8000/api/v1/vocabs/personal/")
-        .then(function(response) {
-          setVocabList(response.data); 
-        });
+      this.$http({
+        url: "http://127.0.0.1:8000/api/v1/vocabs/",
+        method: "GET"
+      }).then(function(responseData) {
+        this.vocabList = JSON.parse(responseData.bodyText);
+      });
     },
     submitAdd() {
-      let setDuplicateAlert = this.setDuplicateAlert
-      let loadVocab = this.loadVocab
-      let clear = this.clear
       if (this.german == "" || this.english == "") {
         return;
       }
+      /* eslint-disable no-console */
       console.log("Submit add");
+      /* eslint-enable no-console */
       this.$v.$touch();
-      axios
-        .post("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
+      this.$http
+        .post("http://127.0.0.1:8000/api/v1/vocabs/", {
           german: this.german,
           english: this.english
         })
-        .then(function(response) {
-          var edited = response.data.edited;
+        .then(function(responseData) {
+          var edited = JSON.parse(responseData.bodyText).edited;
           if (edited == "False") {
-            setDuplicateAlert(true);
+            this.duplicateAlert = true;
           } else {
-            setDuplicateAlert(false);
+            this.duplicateAlert = false;
           }
-          loadVocab();
-          clear();
+          this.loadVocab();
+          this.clear();
         });
     },
     submitEdit() {
       if (this.german == "" || this.english == "") {
         return;
       }
+      /* eslint-disable no-console */
       console.log("Submit edit");
-      let setDuplicateAlert = this.setDuplicateAlert
-      let setEditedVocab = this.setEditedVocab
-      let setEditMode = this.setEditMode
-      let loadVocab = this.loadVocab
-      let clear = this.clear
+      /* eslint-enable no-console */
       this.$v.$touch();
-      axios
-        .put("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
+      this.$http
+        .put("http://127.0.0.1:8000/api/v1/vocabs/", {
           germanOld: this.editedVocab,
           german: this.german,
           english: this.english
         })
-        .then(function(response) {
-          var edited = response.data.edited;
+        .then(function(responseData) {
+          var edited = JSON.parse(responseData.bodyText).edited;
           if (edited == "False") {
-            setDuplicateAlert(true);
+            this.duplicateAlert = true;
           } else {
-            setDuplicateAlert(false);
+            this.duplicateAlert = false;
           }
-          loadVocab();
-          clear();
-          setEditedVocab("");
-          setEditMode(false);
+          this.loadVocab();
+          this.clear();
+          this.editedVocab = "";
+          this.editMode = false;
         });
 
-      setEditMode(false);
+      this.editMode = false;
     },
     clear() {
       this.$v.$reset();
@@ -207,38 +186,30 @@ export default {
       }
     },
     deleteSelected() {
-      let clear = this.clear;
-      let setSelected = this.setSelected;
-      let setVocabList = this.setVocabList;
+      /* eslint-disable no-console */
       console.log("delete selected vocabs: " + JSON.stringify(this.selected));
-      axios
-        .delete("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
-          data: {items: this.selected}
+      /* eslint-enable no-console */
+      this.$http
+        .delete("http://127.0.0.1:8000/api/v1/vocabs/", {
+          body: { items: this.selected }
         })
-        .then(function(response) {
-          setVocabList(response.data.vocabs)
-          setSelected([]);
-          clear();
-        });        
+        .then(function() {
+          this.selected = [];
+          this.loadVocab();
+          this.clear();
+        });
     },
     edit(german, english) {
+      /* eslint-disable no-console */
       console.log("Edit vocab: " + german + ", " + english);
+      /* eslint-enable no-console */
       this.editMode = true;
       this.german = german;
       this.english = english;
       this.editedVocab = german;
     }
   },
-  mounted: function() {
-    //Add "Token " if it's not already there
-    let token_header = axios.defaults.headers.common["Authorization"]
-    if (!/^Token\s\w+/.test(token_header)) {
-      axios.defaults.headers.common["Authorization"] = "Token " + token_header
-    }
-    console.log(
-      "Loading vocab with token: " +
-        axios.defaults.headers.common["Authorization"]
-    );
+  beforeMount: function() {
     this.loadVocab();
   }
 };

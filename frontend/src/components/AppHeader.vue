@@ -26,8 +26,8 @@
     <v-toolbar-items class="hidden-sm-and-down">
       <v-btn flat href="/about">About</v-btn>
       <v-btn v-if="!this.$store.getters.isLoggedIn" flat href="/login">Login</v-btn>
-      <v-btn flat href="/vocabs">Vocabs</v-btn>
-      <v-btn v-if="this.$store.getters.isLoggedIn" flat href="/vocabs/personal">Vocabs(personal)</v-btn>
+      <v-btn v-if="this.$store.getters.isLoggedIn" flat href="/vocabs">Vocabs</v-btn>
+      <v-btn v-if="this.$store.getters.isLoggedIn" flat href="/account">Account</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 </template>
@@ -38,10 +38,15 @@ export default {
     menuItems: [
       { title: "About", href: "/about", loggedIn: true, loggedOut: true },
       { title: "Login", href: "/login", loggedIn: false, loggedOut: true },
-      { title: "Vocabs", href: "/vocabs", loggedIn: true, loggedOut: true },
       {
-        title: "Vocabs (Personal)",
-        href: "/vocabs/personal",
+        title: "Vocabs",
+        href: "/vocabs",
+        loggedIn: true,
+        loggedOut: false
+      },
+      {
+        title: "Account",
+        href: "/account",
         loggedIn: true,
         loggedOut: false
       }
