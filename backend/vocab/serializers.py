@@ -5,4 +5,4 @@ from .models import Vocabs
 class VocabsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vocabs
-        fields = ("german", "english")
+        fields = ("german", "english", "pictureUrl")
