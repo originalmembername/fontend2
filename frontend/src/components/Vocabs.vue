@@ -37,12 +37,30 @@
         <v-flex xs8>
           <v-layout row>
             <label class="form-checkbox">
-              <input type="checkbox" :value="vocab.german" v-model="selected" />
+              <input
+                align-center
+                justify-center
+                type="checkbox"
+                :value="vocab.german"
+                v-model="selected"
+              />
               <i class="form-icon"></i>
             </label>
-            <v-img :src="getImage(vocab)" height="100px" width="100px"></v-img>
-            <v-card-text :label="vocab.german">{{vocab.german}}: {{vocab.english}}</v-card-text>
-            <v-btn small @click="edit(vocab.german, vocab.english)">Edit</v-btn>
+            <v-img
+              @click="edit(vocab.german, vocab.english)"
+              class="thumbnail"
+              :src="getImage(vocab)"
+              height="100px"
+              width="100px"
+            ></v-img>
+            <v-layout column align-center justify-center>
+              <v-card-text :label="vocab.german">
+                <h3>{{vocab.german}}</h3>
+              </v-card-text>
+              <v-card-text :label="vocab.english">
+                <h3>{{vocab.english}}</h3>
+              </v-card-text>
+            </v-layout>
           </v-layout>
         </v-flex>
       </v-card>
@@ -235,3 +253,10 @@ export default {
   }
 };
 </script>
+
+<style>
+.thumbnail:hover {
+  opacity: 0.5;
+  cursor: pointer;
+}
+</style>
