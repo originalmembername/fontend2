@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs6>
+    <v-flex xs4 id="vocabEdit">
       <h1 v-if="editMode">Edit vocabulary</h1>
       <h1 v-else>Add new vocabulary</h1>
       <form>
@@ -27,41 +27,25 @@
       </form>
       <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
     </v-flex>
-    <v-flex xs6 style="max-height:400px; overflow:scroll;">
+    <v-flex xs8 style="max-height:400px; overflow:scroll;" id="vocabList">
       <h1>Vocab List</h1>
-      <div>
+      <v-layout row wrap>
+        <v-btn small @click="selectAllEl()">Select all</v-btn>
         <v-btn small @click="deleteSelected()">Delete Selected</v-btn>
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>
-                <label class="form-checkbox">
-                  <input type="checkbox" v-model="selectAll" @click="select">
-                  <i class="form-icon"></i>
-                </label>
-              </th>
-              <th style="padding:10px">German</th>
-              <th>English</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="vocab in vocabList" :key="vocab.german">
-              <td>
-                <label class="form-checkbox">
-                  <input type="checkbox" :value="vocab.german" v-model="selected">
-                  <i class="form-icon"></i>
-                </label>
-              </td>
-              <td style="padding-left:10px">{{vocab.german}}</td>
-              <td>{{vocab.english}}</td>
-              <td>
-                <v-btn small @click="edit(vocab.german, vocab.english)">Edit</v-btn>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      </v-layout>
+      <v-card v-for="vocab in vocabList" :key="vocab.german">
+        <v-flex xs8>
+          <v-layout row>
+            <label class="form-checkbox">
+              <input type="checkbox" :value="vocab.german" v-model="selected" />
+              <i class="form-icon"></i>
+            </label>
+            <v-img :src="getImage(vocab)" height="100px" width="100px"></v-img>
+            <v-card-text :label="vocab.german">{{vocab.german}}: {{vocab.english}}</v-card-text>
+            <v-btn small @click="edit(vocab.german, vocab.english)">Edit</v-btn>
+          </v-layout>
+        </v-flex>
+      </v-card>
     </v-flex>
   </v-layout>
 </template>
@@ -110,32 +94,32 @@ export default {
 
   methods: {
     setEditedVocab(vocab) {
-      this.editedVocab = vocab
+      this.editedVocab = vocab;
     },
     setDuplicateAlert(value) {
-      this.duplicateAlert = value
+      this.duplicateAlert = value;
     },
     setVocabList(data) {
       this.vocabList = data;
     },
     setEditMode(value) {
-      this.editMode = value
+      this.editMode = value;
     },
     setSelected(selected) {
-      this.selected = selected
+      this.selected = selected;
     },
     loadVocab() {
       let setVocabList = this.setVocabList;
       axios
         .get("http://127.0.0.1:8000/api/v1/vocabs/personal/")
         .then(function(response) {
-          setVocabList(response.data); 
+          setVocabList(response.data);
         });
     },
     submitAdd() {
-      let setDuplicateAlert = this.setDuplicateAlert
-      let loadVocab = this.loadVocab
-      let clear = this.clear
+      let setDuplicateAlert = this.setDuplicateAlert;
+      let loadVocab = this.loadVocab;
+      let clear = this.clear;
       if (this.german == "" || this.english == "") {
         return;
       }
@@ -162,11 +146,11 @@ export default {
         return;
       }
       console.log("Submit edit");
-      let setDuplicateAlert = this.setDuplicateAlert
-      let setEditedVocab = this.setEditedVocab
-      let setEditMode = this.setEditMode
-      let loadVocab = this.loadVocab
-      let clear = this.clear
+      let setDuplicateAlert = this.setDuplicateAlert;
+      let setEditedVocab = this.setEditedVocab;
+      let setEditMode = this.setEditMode;
+      let loadVocab = this.loadVocab;
+      let clear = this.clear;
       this.$v.$touch();
       axios
         .put("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
@@ -198,13 +182,14 @@ export default {
       this.clear();
       this.editMode = false;
     },
-    select() {
+    selectAllEl() {
       this.selected = [];
       if (!this.selectAll) {
         for (let i in this.vocabList) {
           this.selected.push(this.vocabList[i].german);
         }
       }
+      this.selectAll = !this.selectAll;
     },
     deleteSelected() {
       let clear = this.clear;
@@ -213,13 +198,13 @@ export default {
       console.log("delete selected vocabs: " + JSON.stringify(this.selected));
       axios
         .delete("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
-          data: {items: this.selected}
+          data: { items: this.selected }
         })
         .then(function(response) {
-          setVocabList(response.data.vocabs)
+          setVocabList(response.data.vocabs);
           setSelected([]);
           clear();
-        });        
+        });
     },
     edit(german, english) {
       console.log("Edit vocab: " + german + ", " + english);
@@ -227,13 +212,20 @@ export default {
       this.german = german;
       this.english = english;
       this.editedVocab = german;
+    },
+    getImage(vocab) {
+      if (vocab.pictureUrl != null) {
+        return vocab.pictureUrl;
+      } else {
+        return "https://image.shutterstock.com/image-vector/no-image-available-icon-template-260nw-1036735678.jpg";
+      }
     }
   },
   beforeMount: function() {
     //Add "Token " if it's not already there
-    let token_header = axios.defaults.headers.common["Authorization"]
+    let token_header = axios.defaults.headers.common["Authorization"];
     if (!/^Token\s\w+/.test(token_header)) {
-      axios.defaults.headers.common["Authorization"] = "Token " + token_header
+      axios.defaults.headers.common["Authorization"] = "Token " + token_header;
     }
     console.log(
       "Loading vocab with token: " +
