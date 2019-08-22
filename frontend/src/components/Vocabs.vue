@@ -28,7 +28,8 @@
       <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
     </v-flex>
     <v-flex xs8 style="max-height:400px; overflow:scroll;" id="vocabList">
-      <h3>Insert Vocab Bar here</h3>
+      <div id="vocab-bar"></div>
+      <!-- TODO -->
       <v-card v-for="vocab in vocabList" :key="vocab.german">
         <v-flex xs8>
           <v-layout row>
@@ -66,18 +67,18 @@
 
 <script>
 /* eslint-disable */
-import Vue from 'vue'
+import Vue from "vue";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import axios from "axios";
-import VocabBar from './VocabBar'
-import VocabBarVue from './VocabBar.vue';
+import VocabBar from "./VocabBar";
+import VocabBarVue from "./VocabBar.vue";
 
 export default {
   name: "Vocabs",
 
-  components:{
-    VocabBar,
+  components: {
+    VocabBar
   },
 
   name: "VocabsVue",
@@ -243,7 +244,7 @@ export default {
       if (vocab.pictureUrl != null) {
         return vocab.pictureUrl;
       } else {
-        return require('../assets/no-image.jpg');
+        return require("../assets/no-image.jpg");
       }
     }
   },
@@ -258,9 +259,12 @@ export default {
         axios.defaults.headers.common["Authorization"]
     );
     this.loadVocab();
+  },
+  mounted: function() {
     //Create HTML components
-  //  var ComponentClass = Vue.extend(VocabBar);
-  //  this.vocabBarComponent = new ComponentClass({vocabsObj: this});
+    var ComponentClass = Vue.extend(VocabBar);
+    this.vocabBarComponent = new ComponentClass({ vocabsObj: this });
+    this.vocabBarComponent.$mount("#vocab-bar")
   }
 };
 </script>
