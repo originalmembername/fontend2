@@ -28,11 +28,7 @@
       <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
     </v-flex>
     <v-flex xs8 style="max-height:400px; overflow:scroll;" id="vocabList">
-      <h1>Vocab List</h1>
-      <v-layout row wrap>
-        <v-btn small @click="selectAllEl()">Select all</v-btn>
-        <v-btn small @click="deleteSelected()">Delete Selected</v-btn>
-      </v-layout>
+      <h3>Insert Vocab Bar here</h3>
       <v-card v-for="vocab in vocabList" :key="vocab.german">
         <v-flex xs8>
           <v-layout row>
@@ -70,11 +66,22 @@
 
 <script>
 /* eslint-disable */
+import Vue from 'vue'
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import axios from "axios";
+import VocabBar from './VocabBar'
+import VocabBarVue from './VocabBar.vue';
 
 export default {
+  name: "Vocabs",
+
+  components:{
+    VocabBar,
+  },
+
+  name: "VocabsVue",
+
   mixins: [validationMixin],
 
   validations: {
@@ -91,7 +98,8 @@ export default {
       vocabList: [],
       duplicateAlert: false,
       editMode: false,
-      editedVocab: ""
+      editedVocab: "",
+      vocabBarComponent: null
     };
   },
 
@@ -235,7 +243,7 @@ export default {
       if (vocab.pictureUrl != null) {
         return vocab.pictureUrl;
       } else {
-        return "https://image.shutterstock.com/image-vector/no-image-available-icon-template-260nw-1036735678.jpg";
+        return require('../assets/no-image.jpg');
       }
     }
   },
@@ -250,6 +258,9 @@ export default {
         axios.defaults.headers.common["Authorization"]
     );
     this.loadVocab();
+    //Create HTML components
+  //  var ComponentClass = Vue.extend(VocabBar);
+  //  this.vocabBarComponent = new ComponentClass({vocabsObj: this});
   }
 };
 </script>
