@@ -263,7 +263,8 @@ export default {
   mounted: function() {
     //Create HTML components
     var ComponentClass = Vue.extend(VocabBar);
-    this.vocabBarComponent = new ComponentClass({ vocabsObj: this });
+    this.vocabBarComponent = new ComponentClass();
+    this.vocabBarComponent._data.vocabsObj = this;
     this.vocabBarComponent.$mount("#vocab-bar")
   }
 };

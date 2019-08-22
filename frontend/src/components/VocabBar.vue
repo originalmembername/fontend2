@@ -15,14 +15,13 @@ import Vocabs from "./Vocabs";
 export default {
   data() {
     return {
-      vocabsObj: null
+      vocabsObj: "Insert Vocabs Object here"
     };
   },
   methods: {
     selectAllEl() {
-      console.log("select All Vocabs");
-      console.log(Vocabs);
-      return Vocabs.methods.selectAllEl();
+      console.log("select All Vocabs, VocabsBar.vocabsObj: ");
+      console.log(this.vocabsObj);
     },
     deleteSelected() {
       console.log("Delete selected vocabs");
