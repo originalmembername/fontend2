@@ -10,7 +10,7 @@
 
 <script>
 /* eslint-disable */
-import Vocabs from "./Vocabs";
+import Vocabs from "./index";
 
 export default {
   data() {
@@ -20,11 +20,10 @@ export default {
   },
   methods: {
     selectAllEl() {
-      console.log("select All Vocabs, VocabsBar.vocabsObj: ");
-      console.log(this.vocabsObj);
+      return this.vocabsObj.selectAllEl();
     },
     deleteSelected() {
-      console.log("Delete selected vocabs");
+      return this.vocabsObj.deleteSelected();
     }
   }
 };

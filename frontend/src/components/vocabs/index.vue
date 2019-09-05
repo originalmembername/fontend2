@@ -29,38 +29,7 @@
     </v-flex>
     <v-flex xs8 style="max-height:400px; overflow:scroll;" id="vocabList">
       <div id="vocab-bar"></div>
-      <!-- TODO -->
-      <v-card v-for="vocab in vocabList" :key="vocab.german">
-        <v-flex xs8>
-          <v-layout row>
-            <label class="form-checkbox">
-              <input
-                align-center
-                justify-center
-                type="checkbox"
-                :value="vocab.german"
-                v-model="selected"
-              />
-              <i class="form-icon"></i>
-            </label>
-            <v-img
-              @click="edit(vocab.german, vocab.english)"
-              class="thumbnail"
-              :src="getImage(vocab)"
-              height="100px"
-              width="100px"
-            ></v-img>
-            <v-layout column align-center justify-center>
-              <v-card-text :label="vocab.german">
-                <h3>{{vocab.german}}</h3>
-              </v-card-text>
-              <v-card-text :label="vocab.english">
-                <h3>{{vocab.english}}</h3>
-              </v-card-text>
-            </v-layout>
-          </v-layout>
-        </v-flex>
-      </v-card>
+      <div id="vocab-list"></div>
     </v-flex>
   </v-layout>
 </template>
@@ -72,13 +41,14 @@ import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import axios from "axios";
 import VocabBar from "./VocabBar";
-import VocabBarVue from "./VocabBar.vue";
+import VocabList from "./VocabList";
 
 export default {
   name: "Vocabs",
 
   components: {
-    VocabBar
+    VocabBar,
+    VocabList
   },
 
   name: "VocabsVue",
@@ -244,7 +214,7 @@ export default {
       if (vocab.pictureUrl != null) {
         return vocab.pictureUrl;
       } else {
-        return require("../assets/no-image.jpg");
+        return require("../../assets/no-image.jpg");
       }
     }
   },
@@ -261,11 +231,15 @@ export default {
     this.loadVocab();
   },
   mounted: function() {
-    //Create HTML components
-    var ComponentClass = Vue.extend(VocabBar);
-    this.vocabBarComponent = new ComponentClass();
+    //Create HTML sub-components
+    var VocabBarClass = Vue.extend(VocabBar);
+    this.vocabBarComponent = new VocabBarClass();
     this.vocabBarComponent._data.vocabsObj = this;
-    this.vocabBarComponent.$mount("#vocab-bar")
+    this.vocabBarComponent.$mount("#vocab-bar");
+    var VocabListClass = Vue.extend(VocabList);
+    this.vocabListComponent = new VocabListClass();
+    this.vocabListComponent._data.vocabsObj = this;
+    this.vocabListComponent.$mount("#vocab-list");
   }
 };
 </script>
