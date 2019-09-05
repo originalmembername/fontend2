@@ -2,25 +2,21 @@
   <v-app>
     <v-content>
       <AppHeader/>
-      <router-view style="height: 400px"/>
+      <router-view style="height:80%"/>
       <span v-if="isLoggedIn">
-        |
         <a @click="logout">Logout</a>
       </span>
-      <AppFooter/>
     </v-content>
   </v-app>
 </template>
 
 <script>
 import AppHeader from './components/AppHeader'
-import AppFooter from './components/AppFooter'
 
 export default {
   name: 'App',
   components: {
     AppHeader,
-    AppFooter
   },
   computed : {
       isLoggedIn : function(){ return this.$store.getters.isLoggedIn}

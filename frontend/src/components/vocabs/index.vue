@@ -1,37 +1,41 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs4 id="vocabEdit">
-      <h1 v-if="editMode">Edit vocabulary</h1>
-      <h1 v-else>Add new vocabulary</h1>
-      <form>
-        <v-text-field
-          v-model="german"
-          :error-messages="germanErrors"
-          label="German"
-          required
-          @input="$v.german.$touch()"
-          @blur="$v.german.$touch()"
-        ></v-text-field>
-        <v-text-field
-          v-model="english"
-          :error-messages="englishErrors"
-          label="English"
-          required
-          @input="$v.english.$touch()"
-          @blur="$v.english.$touch()"
-        ></v-text-field>
-        <v-btn v-if="editMode" @click.prevent="submitEdit">submit</v-btn>
-        <v-btn v-else @click.prevent="submitAdd">submit</v-btn>
-        <v-btn v-if="editMode" @click="cancelEdit">cancel</v-btn>
-        <v-btn v-else @click="clear">clear</v-btn>
-      </form>
-      <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
-    </v-flex>
-    <v-flex xs8 style="max-height:400px; overflow:scroll;" id="vocabList">
-      <div id="vocab-bar"></div>
-      <div id="vocab-list"></div>
-    </v-flex>
-  </v-layout>
+  <div id="vocabsPage">
+    <v-layout row wrap>
+      <v-flex xs6 id="vocabEdit" theme--light teal lighten-5>
+        <h1 v-if="editMode">Edit vocabulary</h1>
+        <h1 v-else>Add new vocabulary</h1>
+        <form>
+          <v-text-field
+            v-model="german"
+            :error-messages="germanErrors"
+            label="German"
+            required
+            @input="$v.german.$touch()"
+            @blur="$v.german.$touch()"
+          ></v-text-field>
+          <v-text-field
+            v-model="english"
+            :error-messages="englishErrors"
+            label="English"
+            required
+            @input="$v.english.$touch()"
+            @blur="$v.english.$touch()"
+          ></v-text-field>
+          <v-btn v-if="editMode" @click.prevent="submitEdit">submit</v-btn>
+          <v-btn v-else @click.prevent="submitAdd">submit</v-btn>
+          <v-btn v-if="editMode" @click="cancelEdit">cancel</v-btn>
+          <v-btn v-else @click="clear">clear</v-btn>
+        </form>
+        <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
+      </v-flex>
+      <v-flex xs6>
+        <!-- VocabBar.vue -->
+        <div id="vocab-bar"></div>
+        <!-- VocabList.vue  -->
+        <div id="vocab-list"></div>
+      </v-flex>
+    </v-layout>
+  </div>
 </template>
 
 <script>
@@ -42,6 +46,7 @@ import { required } from "vuelidate/lib/validators";
 import axios from "axios";
 import VocabBar from "./VocabBar";
 import VocabList from "./VocabList";
+import _ from "lodash";
 
 export default {
   name: "Vocabs",
@@ -74,6 +79,12 @@ export default {
     };
   },
 
+  watch: {
+    english: _.debounce(function() {
+      this.searchVocab();
+    }, 600)
+  },
+
   computed: {
     germanErrors() {
       const errors = [];
@@ -90,6 +101,9 @@ export default {
   },
 
   methods: {
+    searchVocab() {
+      console.log("Search vocab");
+    },
     setEditedVocab(vocab) {
       this.editedVocab = vocab;
     },

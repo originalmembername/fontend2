@@ -1,5 +1,5 @@
 <template>
-  <div class="black--text v-card theme--light teal lighten-5" style="height:400px">
+  <div class="black--text v-card theme--light teal lighten-5">
     <div class="layout" style="height:100%">
       <div class="flex xs3">
         <v-img :src="require('../assets/profile.jpg')" aspect-ratio="2.75" style="height:100%"></v-img>
