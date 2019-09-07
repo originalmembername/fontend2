@@ -1,32 +1,57 @@
 <template>
   <div id="vocabsPage">
-    <v-layout row wrap>
+    <v-layout row>
       <v-flex xs6 id="vocabEdit" theme--light teal lighten-5>
-        <h1 v-if="editMode">Edit vocabulary</h1>
-        <h1 v-else>Add new vocabulary</h1>
-        <form>
-          <v-text-field
-            v-model="german"
-            :error-messages="germanErrors"
-            label="German"
-            required
-            @input="$v.german.$touch()"
-            @blur="$v.german.$touch()"
-          ></v-text-field>
-          <v-text-field
-            v-model="english"
-            :error-messages="englishErrors"
-            label="English"
-            required
-            @input="$v.english.$touch()"
-            @blur="$v.english.$touch()"
-          ></v-text-field>
-          <v-btn v-if="editMode" @click.prevent="submitEdit">submit</v-btn>
-          <v-btn v-else @click.prevent="submitAdd">submit</v-btn>
-          <v-btn v-if="editMode" @click="cancelEdit">cancel</v-btn>
-          <v-btn v-else @click="clear">clear</v-btn>
-        </form>
-        <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
+        <v-layout column>
+          <h1 v-if="editMode">Edit vocabulary</h1>
+          <h1 v-else>Add new vocabulary</h1>
+          <form>
+            <v-text-field
+              v-model="german"
+              :error-messages="germanErrors"
+              label="German"
+              required
+              @input="$v.german.$touch()"
+              @blur="$v.german.$touch()"
+            ></v-text-field>
+            <v-text-field
+              v-model="english"
+              :error-messages="englishErrors"
+              label="English"
+              required
+              @input="$v.english.$touch()"
+              @blur="$v.english.$touch()"
+            ></v-text-field>
+            <v-btn v-if="editMode" @click.prevent="submitEdit">submit</v-btn>
+            <v-btn v-else @click.prevent="submitAdd">submit</v-btn>
+            <v-btn v-if="editMode" @click="cancelEdit">cancel</v-btn>
+            <v-btn v-else @click="clear">clear</v-btn>
+          </form>
+          <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
+          <v-container fluid grid-list-md>
+            <v-layout row wrap>
+              <v-flex d-flex sm7 xs12>
+                <v-img
+                  height="150px"
+                  width="150px"
+                  src="https://www.baumeister-haus.de/fileadmin/redaktion/Bilder/Hausgalerie/klassisch/Pohl/Haus-Pohl_Bild_aussen_11-1920.jpg"
+                ></v-img>
+              </v-flex>
+              <v-flex d-flex sm5 xs12>
+                <v-layout row wrap>
+                  <v-img
+                    v-for="n in 3"
+                    :key="n"
+                    height="75px"
+                    width="65px"
+                    class="thumbnail"
+                    src="https://www.hanse-haus.de/fileadmin/_processed_/7/b/csm_fertighaus-bauen-startseiten-bild_d13e0ec91d.jpg"
+                  ></v-img>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-layout>
       </v-flex>
       <v-flex xs6>
         <!-- VocabBar.vue -->

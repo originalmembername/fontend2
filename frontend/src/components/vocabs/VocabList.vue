@@ -1,7 +1,6 @@
 <template>
   <v-flex style="overflow:scroll; max-height: 70vh">
     <v-card v-for="vocab in vocabsObj._data.vocabList" :key="vocab.german">
-      <v-flex>
         <v-layout row>
           <label class="form-checkbox">
             <input
@@ -15,21 +14,21 @@
           </label>
           <v-img
             @click="edit(vocab.german, vocab.english)"
-            class="thumbnail"
             :src="getImage(vocab)"
-            width = "auto"
-            height = "auto"
+            class="thumbnail"
+            :contain = "true"
+            max-height="80px"
+
           ></v-img>
-          <v-layout column align-center justify-center>
+          <v-layout column>
             <v-card-text :label="vocab.german">
               <h3>{{vocab.german}}</h3>
             </v-card-text>
             <v-card-text :label="vocab.english">
-              <h3>{{vocab.english}}</h3>
+              <h5>{{vocab.english}}</h5>
             </v-card-text>
           </v-layout>
         </v-layout>
-      </v-flex>
     </v-card>
   </v-flex>
 </template>
