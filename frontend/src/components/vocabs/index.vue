@@ -5,7 +5,7 @@
         <v-layout column>
           <h1 v-if="editMode">Edit vocabulary</h1>
           <h1 v-else>Add new vocabulary</h1>
-          <form>
+          <v-form v-model="valid">
             <v-text-field
               v-model="german"
               :error-messages="germanErrors"
@@ -26,7 +26,7 @@
             <v-btn v-else @click.prevent="submitAdd">submit</v-btn>
             <v-btn v-if="editMode" @click="cancelEdit">cancel</v-btn>
             <v-btn v-else @click="clear">clear</v-btn>
-          </form>
+          </v-form>
           <v-alert :value="duplicateAlert" type="error">Vocab already exists.</v-alert>
           <v-container fluid grid-list-md>
             <v-layout row wrap>
@@ -34,18 +34,19 @@
                 <v-img
                   height="150px"
                   width="150px"
-                  src="https://www.baumeister-haus.de/fileadmin/redaktion/Bilder/Hausgalerie/klassisch/Pohl/Haus-Pohl_Bild_aussen_11-1920.jpg"
+                  :src="mainImg"
                 ></v-img>
               </v-flex>
               <v-flex d-flex sm5 xs12>
                 <v-layout row wrap>
                   <v-img
-                    v-for="n in 3"
-                    :key="n"
+                    v-for="img in images"
+                    :key="img"
                     height="75px"
                     width="65px"
                     class="thumbnail"
-                    src="https://www.hanse-haus.de/fileadmin/_processed_/7/b/csm_fertighaus-bauen-startseiten-bild_d13e0ec91d.jpg"
+                    :src="img"
+                    @click="selectImg(img)"
                   ></v-img>
                 </v-layout>
               </v-flex>
@@ -100,7 +101,13 @@ export default {
       duplicateAlert: false,
       editMode: false,
       editedVocab: "",
-      vocabBarComponent: null
+      valid: false,
+      images: [
+        "https://www.baumeister-haus.de/fileadmin/redaktion/Bilder/Hausgalerie/klassisch/Pohl/Haus-Pohl_Bild_aussen_11-1920.jpg",
+        "https://www.immobilienscout24.de/content/dam/is24/hausbau/bilder/index/hausbau-suedwesthaus-header.jpg",
+        "https://www.hanse-haus.de/fileadmin/_processed_/8/6/csm_Variant_25-192_Nachtaufnahme-fertighaus-satteldach_349ea9d0d6.jpg",
+      ],
+      mainImg: "https://www.baumeister-haus.de/fileadmin/redaktion/Bilder/Hausgalerie/klassisch/Pohl/Haus-Pohl_Bild_aussen_11-1920.jpg",
     };
   },
 
@@ -127,7 +134,31 @@ export default {
 
   methods: {
     searchVocab() {
-      console.log("Search vocab");
+      if (this.valid) {
+        this.$http
+          .get("https://pixabay.com/api/", {
+            params: {
+              key: "13199466-27d2c444fb6b20f46562bd57c",
+              image_type: "photo",
+              per_page: "3",
+              q: `${this.english}`
+            }
+          })
+          .then(response => {
+            let data = response.data.hits;
+            this.setImageOptions(data);
+          });
+      }
+    },
+    setImageOptions(data){
+      this.images = [];
+      for (var i = 0; i < data.length; i++) {
+        this.images[i] = data[i].largeImageURL;
+      }
+      this.mainImg = this.images[0];
+    },
+    selectImg(img){
+      this.mainImg = img;
     },
     setEditedVocab(vocab) {
       this.editedVocab = vocab;
@@ -272,13 +303,13 @@ export default {
   mounted: function() {
     //Create HTML sub-components
     var VocabBarClass = Vue.extend(VocabBar);
-    this.vocabBarComponent = new VocabBarClass();
-    this.vocabBarComponent._data.vocabsObj = this;
-    this.vocabBarComponent.$mount("#vocab-bar");
+    let vocabBarComponent = new VocabBarClass();
+    vocabBarComponent._data.vocabsObj = this;
+    vocabBarComponent.$mount("#vocab-bar");
     var VocabListClass = Vue.extend(VocabList);
-    this.vocabListComponent = new VocabListClass();
-    this.vocabListComponent._data.vocabsObj = this;
-    this.vocabListComponent.$mount("#vocab-list");
+    let vocabListComponent = new VocabListClass();
+    vocabListComponent._data.vocabsObj = this;
+    vocabListComponent.$mount("#vocab-list");
   }
 };
 </script>

@@ -29,6 +29,16 @@
       <v-btn v-if="this.$store.getters.isLoggedIn" flat href="/vocabs">Vocabs</v-btn>
       <v-btn v-if="this.$store.getters.isLoggedIn" flat href="/account">Account</v-btn>
     </v-toolbar-items>
+    <span v-if="this.$store.getters.isLoggedIn">
+      <p>{{$store.state.user}}</p>
+      <a
+        @click="function(){
+            this.$store.dispatch('logout')
+            .then(() => {
+            this.$router.push('/login')
+          })}"
+      >Logout</a>
+    </span>
   </v-toolbar>
 </template>
 

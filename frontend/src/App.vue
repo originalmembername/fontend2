@@ -2,10 +2,7 @@
   <v-app>
     <v-content>
       <AppHeader/>
-      <router-view style="height:80%"/>
-      <span v-if="isLoggedIn">
-        <a @click="logout">Logout</a>
-      </span>
+      <router-view style="height:80%"/>      
     </v-content>
   </v-app>
 </template>
@@ -18,16 +15,13 @@ export default {
   components: {
     AppHeader,
   },
-  computed : {
-      isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
-  },
   methods: {
       logout: function () {
         this.$store.dispatch('logout')
         .then(() => {
           this.$router.push('/login')
         })
-      }
+      },
   },
   created: function () {
     if(this.$http.interceptors.response != null) {

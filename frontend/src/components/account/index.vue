@@ -33,6 +33,7 @@ export default {
 
   mounted() {
     let setMessage = this.setMessage;
+    console.log("Loading account page with username: " + this.$store.state.user)
     //Request user data from server
     axios.defaults.headers.common["Authorization"] =
       "Token " + axios.defaults.headers.common["Authorization"];

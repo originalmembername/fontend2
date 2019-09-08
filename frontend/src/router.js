@@ -4,7 +4,6 @@ import MainPage from './components/MainPage.vue'
 import About from './components/About.vue'
 import Login from './components/Login.vue'
 import Vocabs from './components/vocabs/index.vue'
-import HelloWorld from './components/HelloWorld.vue'
 import Account from './components/account'
 import Register from './components/Register.vue'
 import store from './store.js'
@@ -42,11 +41,6 @@ Vue.use(Router)
       meta: {
         requiresAuth: true
       }
-    },
-    {
-      path: '/helloworld',
-      name: 'helloWorld',
-      component: HelloWorld
     },
     {
       path: '/register',
