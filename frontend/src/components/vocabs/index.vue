@@ -31,13 +31,9 @@
           <v-container fluid grid-list-md>
             <v-layout row wrap>
               <v-flex d-flex sm7 xs12>
-                <v-img
-                  height="150px"
-                  width="150px"
-                  :src="mainImg"
-                ></v-img>
+                <v-img v-if="mainImg!=null" height="150px" width="150px" :src="mainImg"></v-img>
               </v-flex>
-              <v-flex d-flex sm5 xs12>
+              <v-flex v-if="images.length>0" d-flex sm5 xs12>
                 <v-layout row wrap>
                   <v-img
                     v-for="img in images"
@@ -102,18 +98,16 @@ export default {
       editMode: false,
       editedVocab: "",
       valid: false,
-      images: [
-        "https://www.baumeister-haus.de/fileadmin/redaktion/Bilder/Hausgalerie/klassisch/Pohl/Haus-Pohl_Bild_aussen_11-1920.jpg",
-        "https://www.immobilienscout24.de/content/dam/is24/hausbau/bilder/index/hausbau-suedwesthaus-header.jpg",
-        "https://www.hanse-haus.de/fileadmin/_processed_/8/6/csm_Variant_25-192_Nachtaufnahme-fertighaus-satteldach_349ea9d0d6.jpg",
-      ],
-      mainImg: "https://www.baumeister-haus.de/fileadmin/redaktion/Bilder/Hausgalerie/klassisch/Pohl/Haus-Pohl_Bild_aussen_11-1920.jpg",
+      images: [],
+      mainImg: null
     };
   },
 
   watch: {
     english: _.debounce(function() {
-      this.searchVocab();
+      if(this.valid && this.english!=""){
+        this.searchVocab();
+      }      
     }, 600)
   },
 
@@ -150,14 +144,16 @@ export default {
           });
       }
     },
-    setImageOptions(data){
+    setImageOptions(data) {
       this.images = [];
       for (var i = 0; i < data.length; i++) {
         this.images[i] = data[i].largeImageURL;
       }
-      this.mainImg = this.images[0];
+      if(this.mainImg == null){
+        this.mainImg = this.images[0];
+      }      
     },
-    selectImg(img){
+    selectImg(img) {
       this.mainImg = img;
     },
     setEditedVocab(vocab) {
@@ -195,7 +191,8 @@ export default {
       axios
         .post("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
           german: this.german,
-          english: this.english
+          english: this.english,
+          imgUrl: this.mainImg
         })
         .then(function(response) {
           var edited = response.data.edited;
@@ -223,7 +220,8 @@ export default {
         .put("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
           germanOld: this.editedVocab,
           german: this.german,
-          english: this.english
+          english: this.english,
+          imgUrl: this.mainImg
         })
         .then(function(response) {
           var edited = response.data.edited;
@@ -244,6 +242,8 @@ export default {
       this.$v.$reset();
       this.german = "";
       this.english = "";
+      this.mainImg = null;
+      this.images = [];
     },
     cancelEdit() {
       this.clear();
@@ -273,12 +273,13 @@ export default {
           clear();
         });
     },
-    edit(german, english) {
-      console.log("Edit vocab: " + german + ", " + english);
+    edit(vocab) {      
       this.editMode = true;
-      this.german = german;
-      this.english = english;
-      this.editedVocab = german;
+      this.german = vocab.german;
+      this.english = vocab.english;
+      this.editedVocab = vocab.german;
+      console.log("Edit vocab: " + vocab.german + ", " + vocab.english + ", " + vocab.pictureUrl);
+      this.selectImg(vocab.pictureUrl);
     },
     getImage(vocab) {
       if (vocab.pictureUrl != null) {

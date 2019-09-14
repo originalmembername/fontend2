@@ -13,7 +13,7 @@
             <i class="form-icon"></i>
           </label>
           <v-img
-            @click="edit(vocab.german, vocab.english)"
+            @click="edit(vocab)"
             :src="getImage(vocab)"
             class="thumbnail"
             :contain = "true"
@@ -23,8 +23,6 @@
           <v-layout column>
             <v-card-text :label="vocab.german">
               <h3>{{vocab.german}}</h3>
-            </v-card-text>
-            <v-card-text :label="vocab.english">
               <h5>{{vocab.english}}</h5>
             </v-card-text>
           </v-layout>

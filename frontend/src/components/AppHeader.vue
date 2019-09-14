@@ -33,9 +33,9 @@
       <p>{{$store.state.user}}</p>
       <a
         @click="function(){
-            this.$store.dispatch('logout')
+            $store.dispatch('logout')
             .then(() => {
-            this.$router.push('/login')
+            $router.push('/login')
           })}"
       >Logout</a>
     </span>
