@@ -31,13 +31,7 @@
     </v-toolbar-items>
     <span v-if="this.$store.getters.isLoggedIn">
       <p>{{$store.state.user}}</p>
-      <a
-        @click="function(){
-            $store.dispatch('logout')
-            .then(() => {
-            $router.push('/login')
-          })}"
-      >Logout</a>
+      <a @click="logout()">Logout</a>
     </span>
   </v-toolbar>
 </template>
@@ -68,6 +62,11 @@ export default {
         (this.$store.getters.isLoggedIn && item.loggedIn) ||
         (!this.$store.getters.isLoggedIn && item.loggedOut)
       );
+    },
+    logout() {
+      this.$store.dispatch("logout").then(() => {
+        this.$router.push("/login");
+      });
     }
   }
 };

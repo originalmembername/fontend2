@@ -21,6 +21,7 @@
               required
               @input="$v.english.$touch()"
               @blur="$v.english.$touch()"
+              v-on:keyup="keyPressed=true"
             ></v-text-field>
             <v-btn v-if="editMode" @click.prevent="submitEdit">submit</v-btn>
             <v-btn v-else @click.prevent="submitAdd">submit</v-btn>
@@ -99,7 +100,8 @@ export default {
       editedVocab: "",
       valid: false,
       images: [],
-      mainImg: null
+      mainImg: null,
+      keyPressed: false,
     };
   },
 
@@ -149,8 +151,9 @@ export default {
       for (var i = 0; i < data.length; i++) {
         this.images[i] = data[i].largeImageURL;
       }
-      if(this.mainImg == null){
+      if(this.mainImg == null || this.keyPressed){
         this.mainImg = this.images[0];
+        this.keyPressed = false;
       }      
     },
     selectImg(img) {
