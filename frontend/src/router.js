@@ -6,6 +6,7 @@ import Login from './components/Login.vue'
 import Vocabs from './components/vocabs/index.vue'
 import Account from './components/account'
 import Register from './components/Register.vue'
+import ImgTest from './components/ImgTest.vue'
 import store from './store.js'
 
 Vue.use(Router)
@@ -46,6 +47,11 @@ Vue.use(Router)
       path: '/register',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/imgtest',
+      name: 'imgtest',
+      component: ImgTest
     }
   ]
 })
