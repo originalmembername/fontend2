@@ -2,16 +2,15 @@
     <v-form>
       <h1>Search image</h1>
     <v-container>
-      <v-row name="row1">
-
-        <v-col name="col1" cols="12" sm="6" md="3">
+      <v-layout row>
+        <v-flex xs6>
           <v-text-field
             label="Regular"
             v-model="imgUrl"
           ></v-text-field>
           <v-btn @click="loadImg">Load Image</v-btn>
-        </v-col>
-      </v-row>
+        </v-flex>
+      </v-layout>
     </v-container>
     </v-form>
 </template>
