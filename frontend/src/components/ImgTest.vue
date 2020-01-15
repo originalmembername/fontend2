@@ -12,10 +12,13 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <v-img src="https://specials-images.forbesimg.com/imageserve/1026205392/960x0.jpg?fit=scale"></v-img>
     </v-form>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data: () => ({
     imgUrl: ""
@@ -24,6 +27,15 @@ export default {
     loadImg() {
       // eslint-disable-next-line
       console.log("load image: " + this.imgUrl)
+      axios
+          .get("http://127.0.0.1:8000/api/v1/vocabs/imgtest/", {
+ //           imgUrl: this.imgUrl
+          })
+          .then(function (resp) {
+            //eslint-disable-next-line
+            console.log(resp)
+            //process the response
+          })
     }
   }
 }

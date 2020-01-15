@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.core import serializers
 import json
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 
 class ListPersonalVocabsView(generics.ListAPIView):
@@ -64,3 +65,6 @@ class ListPersonalVocabsView(generics.ListAPIView):
             vocabObj.save()
             return JsonResponse({ 'edited' : 'True'})
         
+class ImgTestView(APIView):
+    def get(self, request, version):
+        return JsonResponse({'msg' : 'Image test API'})
