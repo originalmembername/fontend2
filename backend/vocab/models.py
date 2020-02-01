@@ -6,7 +6,9 @@ class Vocabs(models.Model):
     # english translation
     english = models.CharField(max_length=255, null=False)
 
-    pictureUrl= models.CharField(max_length=255, null=True, default=None)
+    pictureUrl = models.CharField(max_length=255, null=True, default=None)
+
+    picture = models.ImageField(upload_to='images',null=True, blank=True)
 
     class Meta:
         ordering = ('german',)

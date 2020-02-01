@@ -27,9 +27,10 @@ export default {
     loadImg() {
       // eslint-disable-next-line
       console.log("load image: " + this.imgUrl)
+      let imgUrl = this.imgUrl
       axios
-          .get("http://127.0.0.1:8000/api/v1/vocabs/imgtest/", {
- //           imgUrl: this.imgUrl
+          .post("http://127.0.0.1:8000/api/v1/vocabs/imgtest/", {
+            imgUrl: imgUrl
           })
           .then(function (resp) {
             //eslint-disable-next-line

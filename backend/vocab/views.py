@@ -66,5 +66,8 @@ class ListPersonalVocabsView(generics.ListAPIView):
             return JsonResponse({ 'edited' : 'True'})
         
 class ImgTestView(APIView):
-    def get(self, request, version):
-        return JsonResponse({'msg' : 'Image test API'})
+    def post(self, request, version):
+        imgUrl = request.data['imgUrl']
+        #download image from url
+        
+        return JsonResponse({'imgUrl' : imgUrl})
