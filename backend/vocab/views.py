@@ -1,11 +1,16 @@
+print("vocab.views.py's __name__: {}".format(__name__))
+print("vocab.views.py's __package__: {}".format(__package__))
+
 import json
 import logging
 import os
+import sys
+import tempfile
 from io import StringIO
 
 import requests
 import requests.exceptions
-from django.core import serializers
+from django.core import files, serializers
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage, Storage
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
@@ -14,11 +19,10 @@ from PIL import Image
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-import tempfile
-from django.core import files
 
-from .models import Vocabs
-from .serializers import VocabsSerializer
+#pylint: disable=relative-beyond-top-level
+from ..models import Vocabs
+from ..serializers import VocabsSerializer
 
 
 class ListPersonalVocabsView(generics.ListAPIView):
