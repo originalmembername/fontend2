@@ -41,5 +41,11 @@ class GetAllVocabsTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+class ImgStoreTest(BaseViewTest):
+
+    def test_download_img_from_url
+    """
+    This test downloads an image from an url to the server
+    """
 # Create your tests here.
 
