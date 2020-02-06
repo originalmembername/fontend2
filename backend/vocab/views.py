@@ -1,22 +1,24 @@
-from django.shortcuts import render
-from rest_framework import generics
-from .models import Vocabs
-from .serializers import VocabsSerializer
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.core import serializers
 import json
+import logging
+import os
+from io import StringIO
+
+import requests
+import requests.exceptions
+from django.core import serializers
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage, Storage
+from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.shortcuts import render
+from PIL import Image
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-import logging
-import requests
-from PIL import Image
-import requests.exceptions
-from io import StringIO
-import os
-from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage
-from django.core.files.storage import Storage
+import tempfile
+from django.core import files
+
+from .models import Vocabs
+from .serializers import VocabsSerializer
 
 
 class ListPersonalVocabsView(generics.ListAPIView):
@@ -77,83 +79,34 @@ class ListPersonalVocabsView(generics.ListAPIView):
             return JsonResponse({'edited': 'True'})
 
 
-class DownloadException(Exception):
-    pass
-
-
-class DownloadTimeout(DownloadException):
-    pass
-
-
-class DownloadMalformedContentType(DownloadException):
-    pass
-
-
-class DownloadTooBig(DownloadException):
-    pass
-
-
 class ImgTestView(APIView):
-    logger = logging.getLogger('uploads')
-    MAX_CONTENT_LENGTH = 10485760  # 10mb
-    UPLOAD_DIR = 'uploads'
-    TIMEOUT = 5  # 5 sec
 
-    def __init__(self, user_pk=None, upload_dir=None, max_content_length=None, timeout=None):
-        self.user_pk = user_pk or 'anonymous'
-        self.upload_dir = upload_dir or self.UPLOAD_DIR
-        self.max_content_length = max_content_length or self.MAX_CONTENT_LENGTH
-        self.timeout = timeout or self.TIMEOUT
+    def post(self, clientRequest, version):
+        imgUrl = clientRequest.data['imgUrl']
+        # Steam the image from the url
+        request = requests.get(imgUrl, stream=True)
+        # Was the request OK?
+        # pylint: disable=no-member
+        if request.status_code != requests.codes.ok:
+            # Nope, error handling, skip file etc etc etc
+            return HttpResponseNotFound(imgUrl)
+        # Get the filename from the url, used for saving later
+        file_name = imgUrl.split('/')[-1]
+        # Create a temporary file
+        lf = tempfile.NamedTemporaryFile()
+        # Read the streamed image in sections
+        for block in request.iter_content(1024 * 8):
+            # If no more file then stop
+            if not block:
+                break
+            # Write image block to temporary file
+            lf.write(block)
+        # Create the model you want to save the image to
+        vocab = Vocabs.objects.create(
+                german=request.data['german'], english=request.data['english'], pictureUrl=imgUrl)
 
-    def check_content_length(self, response):
-        content_length = response.headers.get('content-length', None)
-        if not content_length:
-            self.logger.error('no content length header')
-            raise DownloadMalformedContentType()
-        try:
-            content_length = int(content_length)
-        except ValueError:
-            self.logger.error('malformed content type header')
-            raise DownloadMalformedContentType()
-
-        if content_length > self.max_content_length:
-            self.logger.error(
-                'content length too big - {0} bytes'.format(content_length))
-            raise DownloadTooBig()
-
-    def post(self, request, version):
-        imgUrl = request.data['imgUrl']
-        # download image from url
-        # get response from url
-        try:
-            response = requests.get(imgUrl, timeout=self.TIMEOUT, stream=True)
-        except requests.exceptions.Timeout:
-            self.logger.error("timed out")
-            raise DownloadTimeout()
-        except requests.exceptions.RequestException as err:
-            self.logger.error(err)
-            raise DownloadException()
-        transfer_encoding = response.headers.get('transfer-encoding', None)
-        if transfer_encoding and transfer_encoding.lower() == "chunked":
-            self.logger.error('chunked transfer encoding not supported')
-            raise DownloadException()
-        # check content length
-        self.check_content_length(response)
-
-        # get image content
-        content = StringIO(response.content)
-        try:
-            Image.open(content)
-        except Exception:
-            self.logger.error("can't open content as image")
-            raise DownloadException()
-        else:
-            name = os.path.join(
-                self.upload_dir, Storage.generate_filename(self.user_pk, imgUrl))
-            storage = FileSystemStorage()
-            storage.save(name, ContentFile(content.getvalue()))
-            return storage.url(name), storage.path(name)
-
-        # TODO: see https://gist.github.com/FZambia/faab8f811dee95c7b174
+        # Save the temporary image to the model#
+        # This saves the model so be sure that is it valid
+        vocab.picture.save(file_name, files.File(lf))
 
         return JsonResponse({'imgUrl': imgUrl})

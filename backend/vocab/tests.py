@@ -43,9 +43,10 @@ class GetAllVocabsTest(BaseViewTest):
 
 class ImgStoreTest(BaseViewTest):
 
-    def test_download_img_from_url
+    # def test_download_img_from_url(self)
     """
     This test downloads an image from an url to the server
     """
+
 # Create your tests here.
 
