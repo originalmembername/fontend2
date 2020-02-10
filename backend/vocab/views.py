@@ -1,12 +1,10 @@
-print("vocab.views.py's __name__: {}".format(__name__))
-print("vocab.views.py's __package__: {}".format(__package__))
-
 import json
 import logging
 import os
 import sys
 import tempfile
 from io import StringIO
+from django.core.files.storage import default_storage
 
 import requests
 import requests.exceptions
@@ -21,8 +19,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 #pylint: disable=relative-beyond-top-level
-from ..models import Vocabs
-from ..serializers import VocabsSerializer
+from .models import Vocabs
+from .serializers import VocabsSerializer
 
 
 class ListPersonalVocabsView(generics.ListAPIView):
@@ -105,12 +103,16 @@ class ImgTestView(APIView):
                 break
             # Write image block to temporary file
             lf.write(block)
+
+        #TODO:Remove     Save img to file system
+        imgFile = files.File(lf)
+
         # Create the model you want to save the image to
         vocab = Vocabs.objects.create(
-                german=request.data['german'], english=request.data['english'], pictureUrl=imgUrl)
+                german='neueVokabel', english='newVocab', pictureUrl=imgUrl)
 
         # Save the temporary image to the model#
         # This saves the model so be sure that is it valid
-        vocab.picture.save(file_name, files.File(lf))
+        vocab.picture.save(file_name, imgFile)
 
         return JsonResponse({'imgUrl': imgUrl})
