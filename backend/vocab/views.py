@@ -85,6 +85,9 @@ class ImgTestView(APIView):
 
     def post(self, clientRequest, version):
         imgUrl = clientRequest.data['imgUrl']
+        german = clientRequest.data['german']
+        english = clientRequest.data['english']
+
         # Steam the image from the url
         request = requests.get(imgUrl, stream=True)
         # Was the request OK?
@@ -109,10 +112,15 @@ class ImgTestView(APIView):
 
         # Create the model you want to save the image to
         vocab = Vocabs.objects.create(
-                german='neueVokabel', english='newVocab', pictureUrl=imgUrl)
+                german=german, english=english, pictureUrl=imgUrl)
 
         # Save the temporary image to the model#
         # This saves the model so be sure that is it valid
         vocab.picture.save(file_name, imgFile)
+        
+        serialiser = VocabsSerializer(vocab)
+        domain = clientRequest.get_host()
+        image = "http://" + domain + serialiser.data['picture']
 
-        return JsonResponse({'imgUrl': imgUrl})
+#        return HttpResponse(vocab.picture, content_type="image/jpeg")
+        return JsonResponse({'image' : image})
