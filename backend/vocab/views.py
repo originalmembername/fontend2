@@ -18,6 +18,7 @@ class ListPersonalVocabsView(generics.ListAPIView):
         return user.profile.vocab_list
 
     # Add-function
+    #pylint: disable=unused-argument
     def post(self, request, version):
         profile = self.request.user.profile
         # Check if vocab exists in user's vocab list
@@ -40,6 +41,7 @@ class ListPersonalVocabsView(generics.ListAPIView):
         return JsonResponse({'vocabs': VocabsSerializer(vocabs, many=True).data})
 
     # Edit-function
+    #pylint: disable=unused-argument
     def put(self, request, version):
         profile = self.request.user.profile
         key = request.data['germanOld']
@@ -68,14 +70,16 @@ class ListPersonalVocabsView(generics.ListAPIView):
 
 class ImgTestView(APIView):
 
+    #pylint: disable=unused-argument
     def post(self, clientRequest, version):
         imgUrl = clientRequest.data['imgUrl']
         german = clientRequest.data['german']
         english = clientRequest.data['english']
-        vocab = Vocabs.create_vocab(german=german, english=english, picture_url=imgUrl)
+        vocab = Vocabs.create_vocab(
+            german=german, english=english, picture_url=imgUrl)
         serialiser = VocabsSerializer(vocab)
         domain = clientRequest.get_host()
         image = "http://" + domain + serialiser.data['picture']
 
 #        return HttpResponse(vocab.picture, content_type="image/jpeg")
-        return JsonResponse({'image' : image})
+        return JsonResponse({'image': image})
