@@ -1,19 +1,4 @@
-import json
-import logging
-import os
-import sys
-import tempfile
-from io import StringIO
-from django.core.files.storage import default_storage
-
-import requests
-import requests.exceptions
-from django.core import files, serializers
-from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage, Storage
-from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
-from django.shortcuts import render
-from PIL import Image
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -87,37 +72,7 @@ class ImgTestView(APIView):
         imgUrl = clientRequest.data['imgUrl']
         german = clientRequest.data['german']
         english = clientRequest.data['english']
-
-        # Steam the image from the url
-        request = requests.get(imgUrl, stream=True)
-        # Was the request OK?
-        # pylint: disable=no-member
-        if request.status_code != requests.codes.ok:
-            # Nope, error handling, skip file etc etc etc
-            return HttpResponseNotFound(imgUrl)
-        # Get the filename from the url, used for saving later
-        file_name = imgUrl.split('/')[-1]
-        # Create a temporary file
-        lf = tempfile.NamedTemporaryFile()
-        # Read the streamed image in sections
-        for block in request.iter_content(1024 * 8):
-            # If no more file then stop
-            if not block:
-                break
-            # Write image block to temporary file
-            lf.write(block)
-
-        #TODO:Remove     Save img to file system
-        imgFile = files.File(lf)
-
-        # Create the model you want to save the image to
-        vocab = Vocabs.objects.create(
-                german=german, english=english, pictureUrl=imgUrl)
-
-        # Save the temporary image to the model#
-        # This saves the model so be sure that is it valid
-        vocab.picture.save(file_name, imgFile)
-        
+        vocab = Vocabs.create_vocab(german=german, english=english, picture_url=imgUrl)
         serialiser = VocabsSerializer(vocab)
         domain = clientRequest.get_host()
         image = "http://" + domain + serialiser.data['picture']
