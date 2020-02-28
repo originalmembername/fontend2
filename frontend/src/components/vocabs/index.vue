@@ -265,13 +265,14 @@ export default {
       let clear = this.clear;
       let setSelected = this.setSelected;
       let setVocabList = this.setVocabList;
+      let loadVocab = this.loadVocab;
       console.log("delete selected vocabs: " + JSON.stringify(this.selected));
       axios
         .delete("http://127.0.0.1:8000/api/v1/vocabs/personal/", {
           data: { items: this.selected }
         })
         .then(function(response) {
-          setVocabList(response.data.vocabs);
+          loadVocab();
           setSelected([]);
           clear();
         });
@@ -281,12 +282,12 @@ export default {
       this.german = vocab.german;
       this.english = vocab.english;
       this.editedVocab = vocab.german;
-      console.log("Edit vocab: " + vocab.german + ", " + vocab.english + ", " + vocab.pictureUrl);
-      this.selectImg(vocab.pictureUrl);
+      console.log("Edit vocab: " + vocab.german + ", " + vocab.english + ", " + vocab.picture);
+      this.selectImg(vocab.picture);
     },
     getImage(vocab) {
-      if (vocab.pictureUrl != null) {
-        return vocab.pictureUrl;
+      if (vocab.picture != null) {
+        return vocab.picture;
       } else {
         return require("../../assets/no-image.jpg");
       }

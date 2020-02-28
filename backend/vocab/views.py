@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from urllib3 import response
 
 #pylint: disable=relative-beyond-top-level
 from .models import Vocabs
@@ -23,9 +24,10 @@ class ListPersonalVocabsView(generics.ListAPIView):
         profile = self.request.user.profile
         # Check if vocab exists in user's vocab list
         if profile.vocab_list.filter(german=request.data['german']).count() == 0:
-            vocab = Vocabs.objects.create(
-                german=request.data['german'], english=request.data['english'], pictureUrl=request.data['imgUrl'])
-            vocab.save()
+            vocab = Vocabs.create_vocab(
+                german=request.data['german'], english=request.data['english'], picture_url=request.data['imgUrl']
+            )
+ #           vocab.save() #necessary?
             profile.vocab_list.add(vocab)
             return JsonResponse({'inserted': 'True'})
         else:
@@ -37,8 +39,9 @@ class ListPersonalVocabsView(generics.ListAPIView):
         if len(items) > 0:
             for vocab in items:
                 profile.vocab_list.filter(german=vocab).delete()
-        vocabs = profile.vocab_list
-        return JsonResponse({'vocabs': VocabsSerializer(vocabs, many=True).data})
+            return JsonResponse({'deleted': 'True'})
+        else:
+            return JsonResponse({'deleted': 'False'})
 
     # Edit-function
     #pylint: disable=unused-argument
@@ -52,7 +55,7 @@ class ListPersonalVocabsView(generics.ListAPIView):
             # Only update English
             vocabObj = profile.vocab_list.get(german=key)
             vocabObj.english = english
-            vocabObj.pictureUrl = pictureUrl
+            vocabObj.set_picture(pictureUrl)
             vocabObj.save()
             return JsonResponse({'edited': 'True'})
         elif profile.vocab_list.filter(german=german).count() > 0:
@@ -63,7 +66,7 @@ class ListPersonalVocabsView(generics.ListAPIView):
             vocabObj = profile.vocab_list.get(german=key)
             vocabObj.german = german
             vocabObj.english = english
-            vocabObj.pictureUrl = pictureUrl
+            vocabObj.set_picture(pictureUrl)
             vocabObj.save()
             return JsonResponse({'edited': 'True'})
 

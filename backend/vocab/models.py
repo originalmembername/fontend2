@@ -51,5 +51,21 @@ class Vocabs(models.Model):
 
         return vocab
 
+    def set_picture(self, picture_url):
+        request = requests.get(picture_url, stream=True)
+        # pylint: disable=no-member
+        if request.status_code != requests.codes.ok:
+            return HttpResponseNotFound(picture_url)
+        file_name = picture_url.split('/')[-1]
+        temp_file = tempfile.NamedTemporaryFile()
+        for block in request.iter_content(1024 * 8):
+            if not block:
+                break
+            temp_file.write(block)
+
+        img_file = files.File(temp_file)
+        self.pictureUrl = picture_url
+        self.picture.save(file_name, img_file)
+
     def __str__(self):
         return "{} - {}".format(self.german, self.english)
