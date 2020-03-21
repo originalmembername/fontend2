@@ -1,44 +1,52 @@
 <template>
-  <div>
-    <h4>Register</h4>
-    <form @submit.prevent="register">
-      <label for="name">Name</label>
-      <div>
-          <input id="name" type="text" v-model="name" required autofocus>
-      </div>
+  <v-form v-model="valid">
+    <v-container>
+      <v-layout>
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="username"
+            :rules="nameRules"
+            :counter="10"
+            label="Username"
+            required
+          ></v-text-field>
+        </v-flex>
 
-      <label for="email" >E-Mail Address</label>
-      <div>
-          <input id="email" type="email" v-model="email" required>
-      </div>
-
-      <label for="password">Password</label>
-      <div>
-          <input id="password" type="password" v-model="password" required>
-      </div>
-
-      <label for="password-confirm">Confirm Password</label>
-      <div>
-          <input id="password-confirm" type="password" v-model="password_confirmation" required>
-      </div>
-
-      <div>
-          <button type="submit">Register</button>
-      </div>
-    </form>
-  </div>
+        <v-flex
+          xs12
+          md4
+        >
+          <v-text-field
+            v-model="password"
+            :rules="nameRules"
+            :counter="10"
+            type="password"
+            label="Password"
+            required
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-form>
 </template>
 
 <script>
   export default {
-    data(){
-      return {
-        name : "",
-        email : "",
-        password : "",
-        password_confirmation : "",
-        is_admin : null
-      }
-    },
+    data: () => ({
+      valid: false,
+      username: '',
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters'
+      ],
+      email: '',
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+/.test(v) || 'E-mail must be valid'
+      ]
+    })
   }
 </script>
