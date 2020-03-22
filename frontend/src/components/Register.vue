@@ -2,10 +2,7 @@
   <v-form v-model="valid">
     <v-container>
       <v-layout>
-        <v-flex
-          xs12
-          md4
-        >
+        <v-flex xs12 md4>
           <v-text-field
             v-model="username"
             :rules="nameRules"
@@ -15,38 +12,52 @@
           ></v-text-field>
         </v-flex>
 
-        <v-flex
-          xs12
-          md4
-        >
+        <v-flex xs12 md4>
           <v-text-field
             v-model="password"
-            :rules="nameRules"
+            :rules="passwordRules"
             :counter="10"
             type="password"
             label="Password"
             required
           ></v-text-field>
         </v-flex>
+        <v-flex xs12 md4>
+          <v-text-field
+            v-model="confirmPassword"
+            :rules="passwordRules"
+            :counter="10"
+            type="password"
+            label="Confirm Password"
+            required
+          ></v-text-field>
+        </v-flex>
+        <v-btn @click="submit">submit</v-btn>
       </v-layout>
     </v-container>
   </v-form>
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      valid: false,
-      username: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters'
-      ],
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+/.test(v) || 'E-mail must be valid'
-      ]
-    })
+export default {
+  data: () => ({
+    valid: false,
+    username: "",
+    password: "",
+    confirmPassword:"",
+    nameRules: [
+      v => !!v || "Name is required",
+      v => v.length <= 10 || "Name must be less than 10 characters"
+    ],
+    passwordRules: [
+      v => !!v || "Password is required",
+      v => v.length <= 10 || "Password must be less than 10 characters"
+    ]
+  }),
+  methods: {
+    submit() {
+      this.$v.$touch();
+    }
   }
+};
 </script>
