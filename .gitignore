@@ -19,3 +19,9 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+#
+*.odt*
+
+#Runtime files
+*backend/accounts/__pycache__/urls.cpython-38.pyc*
