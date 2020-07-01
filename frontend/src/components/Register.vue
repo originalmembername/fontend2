@@ -45,6 +45,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   data: () => ({
     valid: false,
@@ -67,6 +68,17 @@ export default {
         this.pwdDifferentAlert = true;
         return;
       }
+      //Send register request to server
+      let username = this.username;
+      let password = this.password;
+      debugger
+      this.$store.dispatch("register", { username, password })
+/*       .then(resp => {
+          this.$router.push("/account");
+        })
+        .catch(err => {
+          console.log(err);
+        }); */
     },
     clear() {
       this.valid = false;
